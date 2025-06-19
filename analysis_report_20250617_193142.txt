@@ -1,0 +1,108 @@
+TICKET-CORE SMART CONTRACT ANALYSIS REPORT
+==========================================
+Generated on: Tue Jun 17 19:31:42 EDT 2025
+
+1. COMPILATION STATUS
+--------------------
+✅ Contract compiles successfully
+
+2. CODE STATISTICS
+------------------
+Total Rust files: 38
+Total lines of code: 2441
+
+3. AVAILABLE INSTRUCTIONS
+------------------------
+Scanning for public functions in lib.rs...
+- create_event
+- update_event
+- cancel_event
+- mint_ticket
+- batch_mint
+- reserve_tickets
+- mint_whitelist
+- transfer_ticket
+- initialize_delegate_transfer
+- complete_delegate_transfer
+- validate_entry
+- burn_ticket
+- mark_ticket_used
+- freeze_ticket
+- unfreeze_ticket
+- request_refund
+- emergency_pause
+
+4. STATE STRUCTURES
+-------------------
+Scanning for account structures...
+📄 ticket.rs:
+  - Ticket {
+  - TransferRecord {
+  - DelegateTransferRecord {
+📄 mod.rs:
+  - DelegateAuthority {
+  - ValidationRecord {
+  - FreezeRecord {
+  - Whitelist {
+📄 insurance.rs:
+  - InsurancePool {
+  - InsuranceClaim {
+📄 analytics.rs:
+  - EventAnalytics {
+  - TierAnalytics {
+  - GeoData {
+  - ReferralData {
+📄 compliance.rs:
+  - ComplianceConfig {
+  - UserCompliance {
+📄 refund.rs:
+  - RefundRequest {
+📄 event.rs:
+  - Event {
+  - TicketTier {
+  - RefundTier {
+
+5. SECURITY ANALYSIS
+--------------------
+Checking for common security patterns...
+Authority validation checks found: 0
+Signer requirement checks found: 0
+Arithmetic overflow protections found: 22
+
+6. POTENTIAL ISSUES
+-------------------
+✅ No unwrap() calls found
+✅ No panic!() calls found
+✅ No TODO comments found
+
+7. FEATURE INVENTORY
+--------------------
+✅ Ticket Minting
+✅ Ticket Transfers
+✅ Ticket Burning
+✅ Refund System
+✅ Whitelist Feature
+✅ Batch Operations
+✅ Delegate Transfers
+✅ Freeze/Unfreeze
+✅ Emergency Controls
+✅ Entry Validation
+
+8. DEPENDENCIES
+---------------
+Main dependencies:
+anchor-lang = "0.29.0"
+
+9. ERROR HANDLING
+-----------------
+Custom error codes defined: 1
+
+10. RECOMMENDATIONS
+-------------------
+⚠️  Review authority validation - seems low for a ticketing system
+✅ Test files found
+✅ Program ID declared
+
+================================================================
+✅ Analysis complete! Full report saved to: analysis_report_20250617_193142.txt
+

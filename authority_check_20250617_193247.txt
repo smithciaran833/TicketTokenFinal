@@ -1,0 +1,63 @@
+AUTHORITY VALIDATION REPORT
+===========================
+
+1. ADMIN FUNCTIONS ANALYSIS
+---------------------------
+Functions that typically need authority checks:
+Checking emergency_pause...
+  ❌ MISSING authority validation!
+     File: programs/ticket-core/src/instructions/admin/emergency_pause.rs
+Checking emergency_unpause...
+  ❌ MISSING authority validation!
+     File: programs/ticket-core/src/instructions/admin/emergency_unpause.rs
+Checking update_authorities...
+  ❌ MISSING authority validation!
+     File: programs/ticket-core/src/instructions/admin/update_authorities.rs
+Checking set_compliance...
+  ❌ MISSING authority validation!
+     File: programs/ticket-core/src/instructions/admin/set_compliance.rs
+Checking update_event...
+  ❌ MISSING authority validation!
+     File: programs/ticket-core/src/instructions/update_event.rs
+Checking cancel_event...
+  ❌ MISSING authority validation!
+     File: programs/ticket-core/src/instructions/cancel_event.rs
+Checking process_refund...
+  ❌ MISSING authority validation!
+     File: programs/ticket-core/src/instructions/refunds/process_refund.rs
+2. CONSTRAINT PATTERNS FOUND
+----------------------------
+Checking for 'has_one' constraints:
+Checking for custom constraints:
+Checking for signer requirements:
+3. ACCOUNTS WITH AUTHORITY FIELD
+--------------------------------
+Checking which accounts have authority fields...
+✅ Event has authority field
+✅ Ticket has authority field
+⚠️  RefundRequest might be missing authority field
+✅ ComplianceConfig has authority field
+4. CRITICAL SECURITY ISSUES
+---------------------------
+Total admin functions: 4
+❌ ProgramState missing or lacks authority control
+5. RECOMMENDATIONS
+------------------
+Based on the analysis:
+
+🚨 CRITICAL: Add authority validation to all admin functions!
+   Example pattern to add in Accounts derive:
+
+   #[account(
+       has_one = authority @ TicketError::Unauthorized
+   )]
+   pub event: Account<'info, Event>,
+
+   #[account(address = event.authority)]
+   pub authority: Signer<'info>,
+
+📝 For each admin function, ensure:
+   1. The authority account is a Signer
+   2. Use has_one constraint to verify authority
+   3. Add @ TicketError::Unauthorized for clear errors
+

@@ -1,0 +1,167 @@
+use anchor_lang::prelude::*;
+
+#[account]
+pub struct Event {
+    pub event_id: u64,              // Unique event ID (8 bytes)
+    pub organizer: Pubkey,          // Event organizer (32 bytes)
+    pub authority: Pubkey,          // Who owns this event (32 bytes)
+    pub name: String,               // Event name (100 bytes)
+    pub venue: String,              // Venue name (100 bytes)
+    pub event_date: i64,           // Deprecated - use start_time
+    pub start_time: i64,           // Event start time (8 bytes)
+    pub end_time: i64,             // Event end time (8 bytes)
+    pub total_tickets: u32,        // Total tickets available (4 bytes)
+    pub tickets_sold: u32,         // Tickets sold (4 bytes)
+    pub tickets_used: u32,         // Tickets that have been used (4 bytes)
+    pub tickets_burned: u32,       // Tickets permanently burned (4 bytes)
+    pub general_price: u64,        // GA ticket price (8 bytes)
+    pub vip_price: u64,           // VIP ticket price (8 bytes)
+    pub cancelled: bool,           // Is event cancelled (1 byte)
+    pub transferable: bool,        // Can tickets be transferred (1 byte)
+    pub transfer_freeze_time: Option<i64>, // When transfers stop (9 bytes)
+    pub gate_staff: Vec<Pubkey>,   // Authorized validators (32 * n bytes)
+    pub freeze_authorities: Vec<Pubkey>, // Who can freeze tickets (32 * n bytes)
+    pub burn_authorities: Vec<Pubkey>,   // Who can burn tickets (32 * n bytes)
+    pub tiers: Vec<TicketTier>,    // Multiple pricing tiers
+    pub bump: u8,                  // PDA bump (1 byte)
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default)]
+pub struct TicketTier {
+    pub name: String,              // "VIP", "GA", etc
+    pub price: u64,                // Price in lamports
+    pub total_supply: u32,         // Max tickets for this tier
+    pub minted_count: u32,         // How many minted
+    pub used_count: u32,           // How many used
+    pub burned_count: u32,         // How many burned
+}
+
+#[account]
+pub struct Ticket {
+    pub ticket_id: u64,            // Unique ticket ID (8 bytes)
+    pub event: Pubkey,             // Event this ticket is for (32 bytes)
+    pub owner: Pubkey,             // Current owner (32 bytes)
+    pub original_owner: Pubkey,    // First buyer (32 bytes)
+    pub tier_index: usize,         // Which tier this ticket is (8 bytes)
+    pub purchase_price: u64,       // What was paid (8 bytes)
+    pub purchased_at: i64,         // When bought (8 bytes)
+    pub used: bool,                // Has been used (1 byte)
+    pub used_at: Option<i64>,      // When it was used (9 bytes)
+    pub is_frozen: bool,           // Frozen for security (1 byte)
+    pub freeze_timestamp: Option<i64>, // When frozen (9 bytes)
+    pub unfreeze_timestamp: Option<i64>, // When unfrozen (9 bytes)
+    pub entry_validated: bool,     // Validated for entry (1 byte)
+    pub entry_time: Option<i64>,   // When entered (9 bytes)
+    pub entry_gate: Option<String>, // Which gate (50 bytes)
+    pub exit_time: Option<i64>,    // When exited (9 bytes)
+    pub exit_gate: Option<String>, // Exit gate (50 bytes)
+    pub transfer_count: u32,       // Times transferred (4 bytes)
+    pub last_transfer_timestamp: i64, // Last transfer time (8 bytes)
+    pub pending_transfer: bool,    // Has pending delegate transfer (1 byte)
+    pub validation_count: u32,     // Times scanned (4 bytes)
+    pub last_validated: i64,       // Last scan time (8 bytes)
+    pub checkpoint_scans: Vec<(String, i64)>, // Internal scans
+    pub transfer_history: Vec<(Pubkey, Pubkey, i64, String)>, // From, To, Time, Memo
+    pub delegate_transfer_history: Vec<(Pubkey, Pubkey, i64, [u8; 32])>, // From, To, Time, EmailHash
+    pub metadata_uri: String,      // NFT metadata (200 bytes)
+    pub bump: u8,                  // PDA bump (1 byte)
+}
+
+#[account]
+pub struct DelegateAuthority {
+    pub ticket: Pubkey,            // Ticket being transferred (32 bytes)
+    pub original_owner: Pubkey,    // Who initiated transfer (32 bytes)
+    pub email_hash: [u8; 32],      // SHA256 of recipient email (32 bytes)
+    pub claim_code: [u8; 16],      // Secure claim code (16 bytes)
+    pub created_at: i64,           // When created (8 bytes)
+    pub expires_at: i64,           // When expires (8 bytes)
+    pub claimed: bool,             // Has been claimed (1 byte)
+}
+
+impl DelegateAuthority {
+    pub const LEN: usize = 8 + // discriminator
+        32 + // ticket
+        32 + // original_owner
+        32 + // email_hash
+        16 + // claim_code
+        8 +  // created_at
+        8 +  // expires_at
+        1 +  // claimed
+        64;  // padding
+}
+
+#[account]
+pub struct ValidationRecord {
+    pub ticket: Pubkey,            // Ticket validated (32 bytes)
+    pub validator: Pubkey,         // Who validated (32 bytes)
+    pub timestamp: i64,            // When validated (8 bytes)
+    pub gate_id: String,           // Which gate/scanner (50 bytes)
+    pub validation_type: ValidationType, // Type of scan (1 byte)
+}
+
+impl ValidationRecord {
+    pub const LEN: usize = 8 + // discriminator
+        32 + // ticket
+        32 + // validator
+        8 +  // timestamp
+        50 + // gate_id
+        1 +  // validation_type
+        64;  // padding
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Debug)]
+pub enum ValidationType {
+    Entry,
+    Exit,
+    Checkpoint,
+}
+
+#[account]
+pub struct FreezeRecord {
+    pub ticket: Pubkey,            // Frozen ticket (32 bytes)
+    pub frozen_by: Pubkey,         // Who froze it (32 bytes)
+    pub freeze_timestamp: i64,     // When frozen (8 bytes)
+    pub reason: FreezeReason,      // Why frozen (1 byte)
+    pub evidence: String,          // Evidence/notes (200 bytes)
+    pub unfrozen: bool,            // Has been unfrozen (1 byte)
+    pub unfrozen_by: Option<Pubkey>, // Who unfroze (33 bytes)
+    pub unfreeze_timestamp: Option<i64>, // When unfrozen (9 bytes)
+    pub unfreeze_note: Option<String>, // Unfreeze reason (200 bytes)
+}
+
+impl FreezeRecord {
+    pub const LEN: usize = 8 + // discriminator
+        32 + // ticket
+        32 + // frozen_by
+        8 +  // freeze_timestamp
+        1 +  // reason
+        200 + // evidence
+        1 +  // unfrozen
+        33 + // unfrozen_by
+        9 +  // unfreeze_timestamp
+        200 + // unfreeze_note
+        64;  // padding
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub enum FreezeReason {
+    SuspectedFraud,
+    DuplicateDetected,
+    PaymentIssue,
+    SecurityConcern,
+    LegalHold,
+    Other,
+}
+
+// Whitelist for presales
+#[account]
+pub struct Whitelist {
+    pub event: Pubkey,
+    pub merkle_root: [u8; 32],
+    pub max_per_wallet: u8,
+    pub active: bool,
+}
+
+impl Whitelist {
+    pub const LEN: usize = 8 + 32 + 32 + 1 + 1 + 64;
+}

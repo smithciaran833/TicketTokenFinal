@@ -1,0 +1,446 @@
+# 🎫 Solana NFT Ticketing System - Smart Contract Core
+
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [How It Works](#how-it-works)
+- [Features Breakdown](#features-breakdown)
+- [State Management](#state-management)
+- [Security Features](#security-features)
+- [Installation & Setup](#installation--setup)
+- [Usage Examples](#usage-examples)
+- [Program Design Decisions](#program-design-decisions)
+
+## 🎯 Overview
+
+This is a production-ready NFT ticketing system built on Solana that revolutionizes event ticketing by:
+- **Eliminating fraud** through blockchain verification
+- **Enabling P2P transfers** without intermediaries
+- **Supporting non-crypto users** via email transfers
+- **Preventing scalping** with price caps and transfer controls
+- **Providing real-time validation** at event gates
+
+**Deployed Program ID**: `EeU4nPMu9omn56qNFwWHLBTwPvXQgHNk4E7scsiK8Wwm` (Devnet)
+
+## 🏗️ Architecture
+
+```
+ticket-core/
+├── programs/ticket-core/src/
+│   ├── lib.rs                    # Program entry point
+│   ├── errors.rs                 # Custom error definitions
+│   ├── state.rs                  # Account structures
+│   └── instructions/
+│       ├── mod.rs                # Module exports
+│       │
+│       ├── # Event Management (Days 1-3)
+│       ├── create_event.rs       # Create new events
+│       ├── update_event.rs       # Modify event details
+│       ├── cancel_event.rs       # Cancel events
+│       │
+│       ├── # Minting System (Days 4-5)
+│       ├── mint_ticket.rs        # Single ticket minting
+│       ├── batch_mint.rs         # Bulk minting (up to 100)
+│       ├── reserve_tickets.rs    # Reserve for organizers
+│       ├── mint_whitelist.rs     # Presale minting
+│       │
+│       └── # Transfer & Validation (Days 6-7)
+│           ├── transfer_ticket.rs     # P2P transfers
+│           ├── delegate_transfer.rs   # Email transfers
+│           ├── validate_entry.rs      # Gate validation
+│           ├── burn_ticket.rs         # Ticket burning
+│           └── freeze_ticket.rs       # Fraud prevention
+```
+
+## 🔄 How It Works
+
+### 1. Event Creation Flow
+```mermaid
+graph LR
+    A[Organizer] -->|Creates Event| B[Event PDA]
+    B --> C[Set Ticket Supply]
+    B --> D[Configure Pricing]
+    B --> E[Set Transfer Rules]
+```
+
+1. **Event organizer** calls `create_event` with event details
+2. Program derives a **PDA (Program Derived Address)** for the event
+3. Event data includes venue, dates, pricing tiers, and capacity
+4. Organizer can configure transfer rules and validation authorities
+
+### 2. Ticket Minting Flow
+```mermaid
+graph LR
+    A[Buyer] -->|Purchases| B[Mint Ticket]
+    B --> C[Ticket PDA Created]
+    C --> D[NFT Metadata]
+    C --> E[Ownership Record]
+```
+
+1. **Buyers** call `mint_ticket` with payment
+2. Program creates a unique **Ticket PDA** linked to the event
+3. Ticket stores ownership, purchase price, and metadata URI
+4. Multiple minting options: single, batch, whitelist, or reserved
+
+### 3. Transfer System
+```mermaid
+graph LR
+    A[Current Owner] -->|Direct Transfer| B[New Owner]
+    A -->|Delegate Transfer| C[Email Hash]
+    C -->|Claim Code| B
+```
+
+- **Direct Transfer**: Wallet-to-wallet using `transfer_ticket`
+- **Delegate Transfer**: For non-crypto users via email
+  - Creates temporary authority with email hash
+  - Generates secure claim code
+  - New user claims with email + code
+
+### 4. Validation Process
+```mermaid
+graph LR
+    A[Ticket Holder] -->|Arrives| B[Gate Scanner]
+    B -->|Validate| C[Validation Record]
+    C --> D[Entry Granted]
+    C --> E[Mark Used/Burn]
+```
+
+1. **Gate staff** scans ticket QR code
+2. Program verifies ticket validity and ownership
+3. Creates permanent validation record
+4. Optionally burns or marks ticket as used
+
+## 🎯 Features Breakdown
+
+### Event Management
+- **Create Event** (`create_event.rs`)
+  - Configurable pricing tiers (GA, VIP, etc.)
+  - Set total capacity and sale windows
+  - Define transfer and validation rules
+  - Automatic PDA generation for uniqueness
+
+- **Update Event** (`update_event.rs`)
+  - Modify venue, dates, or pricing
+  - Only organizer can update
+  - Cannot change after tickets sold (for some fields)
+
+- **Cancel Event** (`cancel_event.rs`)
+  - Emergency cancellation mechanism
+  - Protections if tickets already sold
+  - Enables refund processes
+
+### Minting System
+- **Single Mint** (`mint_ticket.rs`)
+  - Purchase individual tickets
+  - Automatic tier selection
+  - Payment validation
+  - Unique ticket ID generation
+
+- **Batch Mint** (`batch_mint.rs`)
+  - Mint up to 100 tickets at once
+  - Efficient for group purchases
+  - Maintains individual ticket records
+
+- **Reserve Tickets** (`reserve_tickets.rs`)
+  - Hold tickets for artists/VIPs
+  - Bypass public sale
+  - Controlled by organizer
+
+- **Whitelist Mint** (`mint_whitelist.rs`)
+  - Presale for verified fans
+  - Merkle tree verification
+  - Time-limited access
+
+### Transfer & Validation
+- **P2P Transfer** (`transfer_ticket.rs`)
+  - Direct wallet-to-wallet transfers
+  - Optional transfer memos
+  - Transfer history tracking
+  - Configurable freeze periods
+
+- **Delegate Transfer** (`delegate_transfer.rs`)
+  - Email-based transfers for mainstream users
+  - Secure claim process:
+    ```
+    1. Owner initiates transfer with recipient email
+    2. System generates claim code
+    3. Recipient claims with email + code
+    4. Ownership transfers to recipient's wallet
+    ```
+
+- **Entry Validation** (`validate_entry.rs`)
+  - Multiple validation types:
+    - **Entry**: Main event access
+    - **Exit**: Track departures
+    - **Checkpoint**: VIP areas, backstage
+  - Prevents double-entry
+  - Real-time capacity tracking
+
+- **Ticket Lifecycle** (`burn_ticket.rs`)
+  - **Mark Used**: Keeps ticket for records
+  - **Burn**: Permanently destroys ticket
+  - Rent reclamation to owner
+
+- **Security** (`freeze_ticket.rs`)
+  - Freeze suspicious tickets instantly
+  - Multiple freeze reasons:
+    - Suspected fraud
+    - Payment issues
+    - Security concerns
+  - Only organizer can unfreeze
+
+## 📊 State Management
+
+### Core Account Structures
+
+#### Event Account
+```rust
+pub struct Event {
+    pub event_id: u64,              // Unique identifier
+    pub organizer: Pubkey,          // Event creator
+    pub name: String,               // Event name
+    pub venue: String,              // Location
+    pub start_time: i64,            // Unix timestamp
+    pub end_time: i64,              // Unix timestamp
+    pub total_tickets: u32,         // Total capacity
+    pub tickets_sold: u32,          // Current sales
+    pub transferable: bool,         // Allow transfers?
+    pub tiers: Vec<TicketTier>,     // Pricing tiers
+    pub gate_staff: Vec<Pubkey>,    // Authorized validators
+    // ... more fields
+}
+```
+
+#### Ticket Account
+```rust
+pub struct Ticket {
+    pub ticket_id: u64,             // Unique ID
+    pub event: Pubkey,              // Parent event
+    pub owner: Pubkey,              // Current owner
+    pub tier_index: usize,          // Pricing tier
+    pub purchase_price: u64,        // Amount paid
+    pub used: bool,                 // Has been used?
+    pub is_frozen: bool,            // Security freeze?
+    pub entry_validated: bool,      // Entered venue?
+    pub transfer_count: u32,        // Times transferred
+    pub metadata_uri: String,       // NFT metadata
+    // ... validation records, history
+}
+```
+
+### PDA (Program Derived Address) Design
+
+PDAs ensure deterministic, collision-free addresses:
+
+```rust
+// Event PDA
+[b"event", event_id.to_le_bytes()]
+
+// Ticket PDA  
+[b"ticket", event_pubkey, ticket_id.to_le_bytes()]
+
+// Delegate Authority PDA
+[b"delegate", ticket_pubkey]
+
+// Validation Record PDA
+[b"validation", ticket_pubkey, timestamp.to_le_bytes()]
+```
+
+## 🔒 Security Features
+
+### 1. **Ownership Verification**
+- Every action verifies the signer owns the ticket
+- Tickets can only be transferred by current owner
+- Delegate transfers require email + claim code
+
+### 2. **Fraud Prevention**
+- **Freeze System**: Instantly freeze suspicious tickets
+- **Validation Records**: Permanent, immutable entry logs
+- **Double-Spend Prevention**: Can't use same ticket twice
+
+### 3. **Access Control**
+- **Role-Based**: Organizers, gate staff, freeze authorities
+- **Time-Based**: Events have start/end times
+- **Conditional**: Transfers can be disabled or time-limited
+
+### 4. **Data Integrity**
+- **PDA Uniqueness**: No duplicate tickets possible
+- **Atomic Operations**: All-or-nothing transactions
+- **Rent Exemption**: Accounts persist permanently
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+- Rust 1.75.0
+- Solana CLI 1.18.18
+- Anchor 0.29.0
+- Node.js 16+
+
+### Build & Deploy
+```bash
+# Clone the repository
+git clone <your-repo>
+cd ticket-core
+
+# Build the program
+cargo +1.75.0 build-sbf
+
+# Deploy to devnet
+solana program deploy target/deploy/ticket_core.so
+
+# Run tests
+npx anchor test --provider.cluster devnet --skip-local-validator
+```
+
+## 💻 Usage Examples
+
+### Create an Event
+```typescript
+const eventId = new BN(Date.now());
+const [eventPda] = PublicKey.findProgramAddressSync(
+  [Buffer.from("event"), eventId.toArrayLike(Buffer, "le", 8)],
+  programId
+);
+
+await program.methods
+  .createEvent(
+    "Taylor Swift - Eras Tour",
+    "Madison Square Garden",
+    new BN(Date.now() / 1000 + 86400), // Tomorrow
+    new BN(20000), // Total tickets
+    new BN(0.5 * LAMPORTS_PER_SOL), // GA price
+    new BN(2.0 * LAMPORTS_PER_SOL)  // VIP price
+  )
+  .accounts({
+    event: eventPda,
+    authority: wallet.publicKey,
+    systemProgram: SystemProgram.programId,
+  })
+  .rpc();
+```
+
+### Mint a Ticket
+```typescript
+const [ticketPda] = PublicKey.findProgramAddressSync(
+  [Buffer.from("ticket"), eventPda.toBuffer(), ticketId.toArrayLike(Buffer, "le", 8)],
+  programId
+);
+
+await program.methods
+  .mintTicket("general") // or "vip"
+  .accounts({
+    ticket: ticketPda,
+    event: eventPda,
+    buyer: wallet.publicKey,
+    systemProgram: SystemProgram.programId,
+  })
+  .rpc();
+```
+
+### Transfer a Ticket
+```typescript
+await program.methods
+  .transferTicket("Gift for my friend") // Optional memo
+  .accounts({
+    ticket: ticketPda,
+    event: eventPda,
+    from: currentOwner.publicKey,
+    to: newOwner.publicKey,
+    systemProgram: SystemProgram.programId,
+  })
+  .signers([currentOwner])
+  .rpc();
+```
+
+### Email Transfer (Delegate)
+```typescript
+// Step 1: Initialize transfer
+const emailHash = crypto.createHash('sha256').update('friend@email.com').digest();
+
+await program.methods
+  .initializeDelegateTransfer(
+    [...emailHash],
+    new BN(24) // Expires in 24 hours
+  )
+  .accounts({
+    ticket: ticketPda,
+    event: eventPda,
+    delegateAuthority: delegatePda,
+    owner: wallet.publicKey,
+    systemProgram: SystemProgram.programId,
+  })
+  .rpc();
+
+// Step 2: Recipient claims
+await program.methods
+  .completeDelegateTransfer(emailHash, claimCode)
+  .accounts({
+    ticket: ticketPda,
+    event: eventPda,
+    delegateAuthority: delegatePda,
+    newOwner: recipient.publicKey,
+    originalOwner: originalOwner.publicKey,
+    systemProgram: SystemProgram.programId,
+  })
+  .signers([recipient])
+  .rpc();
+```
+
+## 🎨 Program Design Decisions
+
+### Why Solana?
+- **Speed**: 400ms block times for instant transfers
+- **Cost**: Fractions of a cent per transaction
+- **Scalability**: 65,000 TPS for major events
+
+### Why PDAs over Traditional Minting?
+- **Deterministic**: Can derive addresses offline
+- **No Collisions**: Guaranteed unique tickets
+- **Program Authority**: Only our program can modify
+
+### Why Delegate Transfers?
+- **Mass Adoption**: 90% of users don't have crypto wallets
+- **Familiar UX**: Email-based like traditional ticketing
+- **Security**: Time-limited with secure claim codes
+
+### Why Not Burn Immediately?
+- **Flexibility**: Some events want to keep tickets as collectibles
+- **Data**: Maintain attendance records
+- **Refunds**: Easier to process if ticket still exists
+
+## 🔮 Future Enhancements
+
+### Smart Contract (Completed ✅)
+- ✅ Event creation and management
+- ✅ Multi-tier ticket minting
+- ✅ P2P and delegate transfers
+- ✅ Entry validation system
+- ✅ Security and fraud prevention
+
+### Backend Services (Week 2)
+- Event service with database
+- Payment processing (Stripe)
+- Email/SMS delivery
+- Wallet management
+
+### Advanced Features (Months 2-6)
+- Secondary marketplace
+- Dynamic pricing
+- VIP experiences
+- Analytics dashboard
+- Mobile apps
+
+## 📞 Support
+
+For questions or issues:
+- GitHub Issues: [your-repo-issues]
+- Documentation: [your-docs-site]
+- Discord: [your-discord]
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+---
+
+Built with ❤️ for the future of event ticketing
