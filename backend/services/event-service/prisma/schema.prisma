@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model events {
+  id                   String         @id
+  event_id             BigInt         @unique
+  blockchain_address   String?
+  organizer_wallet     String
+  name                 String
+  description          String?
+  venue_id             String
+  start_time           DateTime
+  end_time             DateTime
+  total_tickets        Int
+  tickets_sold         Int            @default(0)
+  tickets_used         Int            @default(0)
+  tickets_burned       Int            @default(0)
+  general_price        BigInt
+  vip_price            BigInt
+  cancelled            Boolean        @default(false)
+  transferable         Boolean        @default(true)
+  transfer_freeze_time DateTime?
+  metadata             String?
+  status               String         @default("DRAFT")
+  created_at           DateTime       @default(now())
+  updated_at           DateTime
+  venues               venues         @relation(fields: [venue_id], references: [id])
+  ticket_tiers         ticket_tiers[]
+
+  @@index([status])
+  @@index([start_time])
+  @@index([venue_id])
+  @@index([organizer_wallet])
+}
+
+model ticket_tiers {
+  id              String  @id
+  event_id        String
+  name            String
+  price           BigInt
+  total_supply    Int
+  minted_count    Int     @default(0)
+  dynamic_pricing Boolean @default(false)
+  min_price       BigInt?
+  max_price       BigInt?
+  metadata        String?
+  events          events  @relation(fields: [event_id], references: [id])
+}
+
+model venues {
+  id           String   @id
+  name         String
+  address      String
+  city         String
+  state        String
+  country      String
+  postal_code  String
+  latitude     Float
+  longitude    Float
+  capacity     Int
+  venue_type   String
+  amenities    String   @default("")
+  owner_wallet String
+  verified     Boolean  @default(false)
+  metadata     String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime
+  events       events[]
+
+  @@index([city, state])
+  @@index([owner_wallet])
+}

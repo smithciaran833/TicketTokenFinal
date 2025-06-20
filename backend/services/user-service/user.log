@@ -1,0 +1,53 @@
+
+> user-service@1.0.0 start:dev
+> nest start --watch
+
+[2J[3J[H[[90m4:50:54 PM[0m] Starting compilation in watch mode...
+
+[96msrc/controllers/wallet.controller.ts[0m:[93m61[0m:[93m55[0m - [91merror[0m[90m TS2551: [0mProperty 'generateConnectionUrl' does not exist on type 'PhantomIntegrationService'. Did you mean 'generateConnectUrl'?
+
+[7m61[0m       const connectionUrl = await this.phantomService.generateConnectionUrl(
+[7m  [0m [91m                                                      ~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/services/walletManager/phantomIntegration.ts[0m:[93m9[0m:[93m3[0m
+    [7m9[0m   generateConnectUrl(data: {
+    [7m [0m [96m  ~~~~~~~~~~~~~~~~~~[0m
+    'generateConnectUrl' is declared here.
+
+[[90m4:50:56 PM[0m] Found 1 error. Watching for file changes.
+
+[2J[3J[H[[90m4:51:49 PM[0m] File change detected. Starting incremental compilation...
+
+[96msrc/controllers/wallet.controller.ts[0m:[93m62[0m:[93m9[0m - [91merror[0m[90m TS2345: [0mArgument of type 'string' is not assignable to parameter of type '{ userId: string; redirectUrl: string; cluster?: "mainnet-beta" | "testnet" | "devnet"; }'.
+
+[7m62[0m         createWalletDto.userId
+[7m  [0m [91m        ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[[90m4:51:50 PM[0m] Found 1 error. Watching for file changes.
+
+[2J[3J[H[[90m5:09:09 PM[0m] File change detected. Starting incremental compilation...
+
+[[90m5:09:09 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[33m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [33m   WARN[39m [38;5;3m[KeyEncryptionService] [39m[33mAWS KMS not configured, using local encryption (NOT FOR PRODUCTION)[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mBullModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUserModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWalletController {/wallets}:[39m[38;5;3m +39ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/wallets/create, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/wallets/connect-phantom, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/wallets/:walletAddress/balance, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/wallets/migrate, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/wallets/migrate/:migrationId/status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/wallets/analytics/:userId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:11 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +3ms[39m
+User Service running on http://localhost:3003
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:21 PM [32m    LOG[39m [38;5;3m[CustodialWalletService] [39m[32mCreated custodial wallet for test1750453761221@example.com: 59Hdhyetuy55hdBT3uwoaYHgQyLMG76yQV3fCEHZBrZZ[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:09:21 PM [32m    LOG[39m [38;5;3m[WalletAnalyticsService] [39m[32mTracked wallet creation: CUSTODIAL for user user-1750453761221[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:20:46 PM [32m    LOG[39m [38;5;3m[CustodialWalletService] [39m[32mCreated custodial wallet for test1750454446471@example.com: Fk2yaMCkiegq3NvYGNgBppy7DVzps6BeCZnQZQd3pyS9[39m
+[32m[Nest] 2760  - [39m06/20/2025, 5:20:46 PM [32m    LOG[39m [38;5;3m[WalletAnalyticsService] [39m[32mTracked wallet creation: CUSTODIAL for user user-1750454446471[39m

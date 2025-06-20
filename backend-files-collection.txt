@@ -1,0 +1,3399 @@
+=== BACKEND FILE COLLECTION ===
+Generated on: Fri Jun 20 12:56:54 EDT 2025
+================================
+
+========================================
+SERVICE: event-service
+========================================
+
+=== FILE: backend/services/event-service/package.json ===
+=== START OF FILE ===
+{
+  "name": "event-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "build": "nest build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@nestjs/common": "^11.1.3",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.3",
+    "@nestjs/platform-express": "^11.1.3",
+    "@nestjs/swagger": "^11.2.0",
+    "@prisma/client": "^6.10.1",
+    "@solana/web3.js": "^1.98.2",
+    "bullmq": "^5.54.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "ioredis": "^5.6.1",
+    "prisma": "^6.10.1",
+    "rrule": "^2.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.7",
+    "@types/node": "^24.0.3",
+    "@types/rrule": "^2.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/tsconfig.json ===
+=== START OF FILE ===
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/prisma/schema.prisma ===
+=== START OF FILE ===
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id                String   @id @default(uuid())
+  eventId           BigInt   @unique @map("event_id")
+  blockchainAddress String?  @map("blockchain_address")
+  organizerWallet   String   @map("organizer_wallet")
+  
+  name              String
+  description       String?
+  venueId           String   @map("venue_id")
+  venue             Venue    @relation(fields: [venueId], references: [id])
+  
+  startTime         DateTime @map("start_time")
+  endTime           DateTime @map("end_time")
+  
+  totalTickets      Int      @map("total_tickets")
+  ticketsSold       Int      @default(0) @map("tickets_sold")
+  ticketsUsed       Int      @default(0) @map("tickets_used")
+  ticketsBurned     Int      @default(0) @map("tickets_burned")
+  
+  generalPrice      BigInt   @map("general_price")
+  vipPrice          BigInt   @map("vip_price")
+  
+  cancelled         Boolean  @default(false)
+  transferable      Boolean  @default(true)
+  transferFreezeTime DateTime? @map("transfer_freeze_time")
+  
+  metadata          String?  
+  status            String   @default("DRAFT")
+  
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  tiers             TicketTier[]
+  
+  @@index([organizerWallet])
+  @@index([venueId])
+  @@index([startTime])
+  @@index([status])
+  @@map("events")
+}
+
+model Venue {
+  id            String   @id @default(uuid())
+  name          String
+  address       String
+  city          String
+  state         String
+  country       String
+  postalCode    String   @map("postal_code")
+  latitude      Float
+  longitude     Float
+  
+  capacity      Int
+  venueType     String   @map("venue_type")
+  amenities     String   @default("") // Changed from String[] to String for SQLite
+  
+  ownerWallet   String   @map("owner_wallet")
+  verified      Boolean  @default(false)
+  
+  metadata      String?  
+  
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  events        Event[]
+  
+  @@index([ownerWallet])
+  @@index([city, state])
+  @@map("venues")
+}
+
+model TicketTier {
+  id            String   @id @default(uuid())
+  eventId       String   @map("event_id")
+  event         Event    @relation(fields: [eventId], references: [id])
+  
+  name          String
+  price         BigInt
+  totalSupply   Int      @map("total_supply")
+  mintedCount   Int      @default(0) @map("minted_count")
+  
+  dynamicPricing Boolean @default(false) @map("dynamic_pricing")
+  minPrice      BigInt?  @map("min_price")
+  maxPrice      BigInt?  @map("max_price")
+  
+  metadata      String?  
+  
+  @@map("ticket_tiers")
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/main.ts ===
+=== START OF FILE ===
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  
+  // Enable CORS
+  app.enableCors();
+  
+  // Global validation pipe
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+  }));
+  
+  // Swagger setup
+  const config = new DocumentBuilder()
+    .setTitle('TicketToken Event Service')
+    .setDescription('Event management service for blockchain ticketing')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+  
+  await app.listen(3001);
+  console.log('Event Service running on http://localhost:3001');
+}
+bootstrap();
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/controllers/eventController.ts ===
+=== START OF FILE ===
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { EventService } from '../services/eventService';
+import { CreateEventDto, UpdateEventDto, EventFilterDto } from '../dto/event.dto';
+
+@ApiTags('Events')
+@Controller('events')
+export class EventController {
+  constructor(private readonly eventService: EventService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new event' })
+  @ApiResponse({ status: 201, description: 'Event created successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  async create(@Body() createEventDto: CreateEventDto) {
+    const event = await this.eventService.createEvent({
+      ...createEventDto,
+      startTime: new Date(createEventDto.startTime),
+      endTime: new Date(createEventDto.endTime),
+    });
+
+    // Convert BigInt to string for JSON serialization
+    return this.serializeEvent(event);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all events' })
+  @ApiResponse({ status: 200, description: 'Returns all events' })
+  async findAll(@Query() filters: EventFilterDto) {
+    const events = await this.eventService.findAll({
+      ...filters,
+      startDate: filters.startDate ? new Date(filters.startDate) : undefined,
+      endDate: filters.endDate ? new Date(filters.endDate) : undefined,
+    });
+
+    return events.map(event => this.serializeEvent(event));
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get event by ID' })
+  @ApiResponse({ status: 200, description: 'Returns the event' })
+  @ApiResponse({ status: 404, description: 'Event not found' })
+  async findOne(@Param('id') id: string) {
+    const event = await this.eventService.findOne(id);
+    return this.serializeEvent(event);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update an event' })
+  @ApiResponse({ status: 200, description: 'Event updated successfully' })
+  @ApiResponse({ status: 404, description: 'Event not found' })
+  async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+    const event = await this.eventService.update(id, {
+      ...updateEventDto,
+      startTime: updateEventDto.startTime ? new Date(updateEventDto.startTime) : undefined,
+      endTime: updateEventDto.endTime ? new Date(updateEventDto.endTime) : undefined,
+    });
+
+    return this.serializeEvent(event);
+  }
+
+  @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Cancel an event' })
+  @ApiResponse({ status: 200, description: 'Event cancelled successfully' })
+  @ApiResponse({ status: 404, description: 'Event not found' })
+  async cancel(@Param('id') id: string, @Body('reason') reason: string) {
+    const event = await this.eventService.cancel(id, reason);
+    return this.serializeEvent(event);
+  }
+
+  @Get(':id/capacity')
+  @ApiOperation({ summary: 'Get event capacity information' })
+  @ApiResponse({ status: 200, description: 'Returns capacity details' })
+  async getCapacity(@Param('id') id: string) {
+    return this.eventService.getCapacity(id);
+  }
+
+  @Post(':id/sync')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Sync event from blockchain' })
+  @ApiResponse({ status: 200, description: 'Event synced successfully' })
+  async syncFromBlockchain(@Param('id') id: string) {
+    await this.eventService.syncFromBlockchain(id);
+    return { message: 'Sync initiated' };
+  }
+
+  // Helper method to serialize BigInt values
+  private serializeEvent(event: any) {
+    return {
+      ...event,
+      eventId: event.eventId?.toString(),
+      generalPrice: event.generalPrice?.toString(),
+      vipPrice: event.vipPrice?.toString(),
+      tiers: event.tiers?.map((tier: any) => ({
+        ...tier,
+        price: tier.price?.toString(),
+        minPrice: tier.minPrice?.toString(),
+        maxPrice: tier.maxPrice?.toString(),
+      })),
+    };
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/controllers/scheduleController.ts ===
+=== START OF FILE ===
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Param,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ScheduleService } from '../services/scheduleService';
+
+@ApiTags('Schedule')
+@Controller('schedule')
+export class ScheduleController {
+  constructor(private readonly scheduleService: ScheduleService) {}
+
+  @Post('recurring')
+  @ApiOperation({ summary: 'Create recurring events' })
+  @ApiResponse({ status: 201, description: 'Recurring events created' })
+  async createRecurring(@Body() data: {
+    templateEventId: string;
+    recurrenceRule: string;
+    startDate: string;
+    endDate?: string;
+  }) {
+    const events = await this.scheduleService.createRecurringEvent(
+      data.templateEventId,
+      data.recurrenceRule,
+      new Date(data.startDate),
+      data.endDate ? new Date(data.endDate) : undefined
+    );
+
+    return {
+      message: 'Recurring events created',
+      count: events.length,
+      events: events.map(e => ({
+        id: e.id,
+        name: e.name,
+        startTime: e.startTime,
+      })),
+    };
+  }
+
+  @Get('upcoming')
+  @ApiOperation({ summary: 'Get upcoming events' })
+  @ApiQuery({ name: 'organizerWallet', required: false })
+  @ApiQuery({ name: 'venueId', required: false })
+  @ApiQuery({ name: 'days', required: false, type: Number })
+  async getUpcoming(
+    @Query('organizerWallet') organizerWallet?: string,
+    @Query('venueId') venueId?: string,
+    @Query('days') days?: number
+  ) {
+    const events = await this.scheduleService.getUpcomingEvents(
+      organizerWallet,
+      venueId,
+      days ? parseInt(days.toString()) : undefined
+    );
+
+    return events.map(event => this.serializeEvent(event));
+  }
+
+  @Get('calendar/:year/:month')
+  @ApiOperation({ summary: 'Get event calendar for a month' })
+  @ApiQuery({ name: 'venueId', required: false })
+  async getCalendar(
+    @Param('year') year: string,
+    @Param('month') month: string,
+    @Query('venueId') venueId?: string
+  ) {
+    return this.scheduleService.getEventCalendar(
+      parseInt(year),
+      parseInt(month),
+      venueId
+    );
+  }
+
+  @Post('check-conflicts')
+  @ApiOperation({ summary: 'Check for scheduling conflicts' })
+  async checkConflicts(@Body() data: {
+    venueId: string;
+    startTime: string;
+    endTime: string;
+    excludeEventId?: string;
+  }) {
+    const hasConflicts = await this.scheduleService.checkConflicts(
+      data.venueId,
+      new Date(data.startTime),
+      new Date(data.endTime),
+      data.excludeEventId
+    );
+
+    return { hasConflicts };
+  }
+
+  private serializeEvent(event: any) {
+    return {
+      ...event,
+      eventId: event.eventId?.toString(),
+      generalPrice: event.generalPrice?.toString(),
+      vipPrice: event.vipPrice?.toString(),
+    };
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/controllers/venueController.ts ===
+=== START OF FILE ===
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Param,
+  Query,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { VenueService } from '../services/venueService';
+import { CreateVenueDto, VenueFilterDto, NearbyVenueDto } from '../dto/venue.dto';
+
+@ApiTags('Venues')
+@Controller('venues')
+export class VenueController {
+  constructor(private readonly venueService: VenueService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new venue' })
+  @ApiResponse({ status: 201, description: 'Venue created successfully' })
+  @ApiResponse({ status: 409, description: 'Venue already exists at location' })
+  async create(@Body() createVenueDto: CreateVenueDto) {
+    return this.venueService.create(createVenueDto);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all venues' })
+  @ApiResponse({ status: 200, description: 'Returns all venues' })
+  async findAll(@Query() filters: VenueFilterDto) {
+    return this.venueService.findAll(filters);
+  }
+
+  @Get('nearby')
+  @ApiOperation({ summary: 'Find venues near a location' })
+  @ApiResponse({ status: 200, description: 'Returns nearby venues' })
+  async findNearby(@Query() query: NearbyVenueDto) {
+    return this.venueService.findNearby(
+      query.latitude,
+      query.longitude,
+      query.radiusKm
+    );
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get venue by ID' })
+  @ApiResponse({ status: 200, description: 'Returns the venue' })
+  @ApiResponse({ status: 404, description: 'Venue not found' })
+  async findOne(@Param('id') id: string) {
+    return this.venueService.findOne(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a venue' })
+  @ApiResponse({ status: 200, description: 'Venue updated successfully' })
+  @ApiResponse({ status: 404, description: 'Venue not found' })
+  async update(@Param('id') id: string, @Body() updateData: any) {
+    return this.venueService.update(id, updateData);
+  }
+
+  @Post(':id/verify')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verify or unverify a venue' })
+  @ApiResponse({ status: 200, description: 'Venue verification updated' })
+  async verify(
+    @Param('id') id: string,
+    @Body('verified') verified: boolean = true
+  ) {
+    return this.venueService.verify(id, verified);
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/services/capacityManager.ts ===
+=== START OF FILE ===
+import { Injectable } from '@nestjs/common';
+import { Redis } from 'ioredis';
+
+@Injectable()
+export class CapacityManager {
+  private redis: Redis;
+
+  constructor() {
+    this.redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+  }
+
+  async reserveTickets(eventId: string, tierId: string, quantity: number): Promise<boolean> {
+    const key = `capacity:${eventId}:${tierId}`;
+    
+    // Use Redis transaction for atomic operation
+    const multi = this.redis.multi();
+    
+    // Get current count
+    multi.get(key);
+    
+    const results = await multi.exec();
+    const current = parseInt(results?.[0]?.[1] as string || '0');
+    
+    // Check if we have capacity
+    // This would need to check against the tier's total supply
+    // For now, assuming we have the capacity cached
+    
+    const reserved = await this.redis.incrby(key, quantity);
+    
+    // Set expiry for reservations (15 minutes)
+    await this.redis.expire(key, 900);
+    
+    return true;
+  }
+
+  async releaseTickets(eventId: string, tierId: string, quantity: number): Promise<void> {
+    const key = `capacity:${eventId}:${tierId}`;
+    await this.redis.decrby(key, quantity);
+  }
+
+  async getRealtimeCapacity(eventId: string): Promise<Map<string, number>> {
+    const pattern = `capacity:${eventId}:*`;
+    const keys = await this.redis.keys(pattern);
+    
+    const capacity = new Map<string, number>();
+    
+    for (const key of keys) {
+      const tierId = key.split(':')[2];
+      const count = await this.redis.get(key);
+      capacity.set(tierId, parseInt(count || '0'));
+    }
+    
+    return capacity;
+  }
+
+  async initializeCapacity(eventId: string, tiers: Array<{id: string, totalSupply: number, mintedCount: number}>) {
+    const pipeline = this.redis.pipeline();
+    
+    for (const tier of tiers) {
+      const key = `capacity:${eventId}:${tier.id}`;
+      const available = tier.totalSupply - tier.mintedCount;
+      pipeline.set(key, available);
+    }
+    
+    await pipeline.exec();
+  }
+
+  async handlePurchaseComplete(eventId: string, tierId: string, quantity: number) {
+    // This is called after successful blockchain mint
+    // We don't need to do anything here since the reservation
+    // already decremented the available count
+  }
+
+  async handlePurchaseFailed(eventId: string, tierId: string, quantity: number) {
+    // Release the tickets back to inventory
+    await this.releaseTickets(eventId, tierId, quantity);
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/services/eventService.ts ===
+=== START OF FILE ===
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+import { PublicKey } from '@solana/web3.js';
+import * as anchor from '@coral-xyz/anchor';
+
+@Injectable()
+export class EventService {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  async createEvent(data: {
+    name: string;
+    description?: string;
+    venueId: string;
+    organizerWallet: string;
+    startTime: Date;
+    endTime: Date;
+    totalTickets: number;
+    generalPrice: bigint;
+    vipPrice: bigint;
+    tiers?: any[];
+  }) {
+    // Validate dates
+    if (data.startTime <= new Date()) {
+      throw new BadRequestException('Event must start in the future');
+    }
+    if (data.endTime <= data.startTime) {
+      throw new BadRequestException('End time must be after start time');
+    }
+
+    // Ensure prices are BigInt
+    const generalPrice = BigInt(data.generalPrice);
+    const vipPrice = BigInt(data.vipPrice);
+
+    // Create event in database
+    const event = await this.prisma.event.create({
+      data: {
+        eventId: BigInt(Date.now()), // Use timestamp as event ID
+        organizerWallet: data.organizerWallet,
+        name: data.name,
+        description: data.description,
+        venueId: data.venueId,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        totalTickets: data.totalTickets,
+        generalPrice: generalPrice,
+        vipPrice: vipPrice,
+        status: 'DRAFT',
+      },
+      include: {
+        venue: true,
+      },
+    });
+
+    // TODO: Queue blockchain deployment
+    // await this.queueBlockchainDeploy(event);
+
+    return event;
+  }
+
+  async findAll(filters?: {
+    organizerWallet?: string;
+    venueId?: string;
+    status?: string;
+    startDate?: Date;
+    endDate?: Date;
+  }) {
+    return this.prisma.event.findMany({
+      where: {
+        ...(filters?.organizerWallet && { organizerWallet: filters.organizerWallet }),
+        ...(filters?.venueId && { venueId: filters.venueId }),
+        ...(filters?.status && { status: filters.status }),
+        ...(filters?.startDate && {
+          startTime: {
+            gte: filters.startDate,
+            ...(filters?.endDate && { lte: filters.endDate }),
+          },
+        }),
+      },
+      include: {
+        venue: true,
+        tiers: true,
+      },
+      orderBy: {
+        startTime: 'asc',
+      },
+    });
+  }
+
+  async findOne(id: string) {
+    const event = await this.prisma.event.findUnique({
+      where: { id },
+      include: {
+        venue: true,
+        tiers: true,
+      },
+    });
+
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+
+    return event;
+  }
+
+  async update(id: string, data: any) {
+    const event = await this.findOne(id);
+
+    // Don't allow updates to events that have started
+    if (new Date() >= event.startTime) {
+      throw new BadRequestException('Cannot update events that have started');
+    }
+
+    // Convert prices to BigInt if provided
+    if (data.generalPrice) {
+      data.generalPrice = BigInt(data.generalPrice);
+    }
+    if (data.vipPrice) {
+      data.vipPrice = BigInt(data.vipPrice);
+    }
+
+    return this.prisma.event.update({
+      where: { id },
+      data,
+      include: {
+        venue: true,
+        tiers: true,
+      },
+    });
+  }
+
+  async cancel(id: string, reason: string) {
+    const event = await this.findOne(id);
+
+    if (event.cancelled) {
+      throw new BadRequestException('Event is already cancelled');
+    }
+
+    // Update database
+    const cancelled = await this.prisma.event.update({
+      where: { id },
+      data: {
+        cancelled: true,
+        status: 'CANCELLED',
+        metadata: JSON.stringify({
+          ...(event.metadata ? JSON.parse(event.metadata) : {}),
+          cancellationReason: reason,
+          cancelledAt: new Date(),
+        }),
+      },
+    });
+
+    // TODO: Queue blockchain cancellation
+    // TODO: Queue refund processing
+
+    return cancelled;
+  }
+
+  async syncFromBlockchain(eventPDA: string) {
+    // TODO: Implement blockchain sync
+    // This will fetch event data from Solana and update database
+  }
+
+  async getCapacity(id: string) {
+    const event = await this.findOne(id);
+    return {
+      total: event.totalTickets,
+      sold: event.ticketsSold,
+      available: event.totalTickets - event.ticketsSold,
+      percentageSold: (event.ticketsSold / event.totalTickets) * 100,
+    };
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/services/pricingEngine.ts ===
+=== START OF FILE ===
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class PricingEngine {
+  private prisma: PrismaClient;
+  
+  // Surge pricing thresholds
+  private readonly SURGE_THRESHOLDS = [
+    { capacity: 0.5, multiplier: 1.0 },   // < 50% sold: normal price
+    { capacity: 0.7, multiplier: 1.1 },   // 50-70% sold: 10% increase
+    { capacity: 0.8, multiplier: 1.25 },  // 70-80% sold: 25% increase
+    { capacity: 0.9, multiplier: 1.5 },   // 80-90% sold: 50% increase
+    { capacity: 1.0, multiplier: 2.0 },   // 90-100% sold: 100% increase
+  ];
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  async calculateDynamicPrice(tierId: string): Promise<bigint> {
+    const tier = await this.prisma.ticketTier.findUnique({
+      where: { id: tierId },
+    });
+
+    if (!tier) {
+      throw new Error('Tier not found');
+    }
+
+    // If dynamic pricing is not enabled, return base price
+    if (!tier.dynamicPricing) {
+      return tier.price;
+    }
+
+    // Calculate capacity-based multiplier
+    const capacityUsed = tier.mintedCount / tier.totalSupply;
+    let multiplier = 1.0;
+
+    for (const threshold of this.SURGE_THRESHOLDS) {
+      if (capacityUsed <= threshold.capacity) {
+        multiplier = threshold.multiplier;
+        break;
+      }
+    }
+
+    // Calculate new price
+    let newPrice = BigInt(Math.floor(Number(tier.price) * multiplier));
+
+    // Enforce min/max bounds
+    if (tier.minPrice && newPrice < tier.minPrice) {
+      newPrice = tier.minPrice;
+    }
+    if (tier.maxPrice && newPrice > tier.maxPrice) {
+      newPrice = tier.maxPrice;
+    }
+
+    return newPrice;
+  }
+
+  async getTimeSensitiveMultiplier(eventId: string): Promise<number> {
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
+
+    if (!event) {
+      return 1.0;
+    }
+
+    const now = new Date();
+    const hoursUntilEvent = (event.startTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+    // Last minute pricing
+    if (hoursUntilEvent <= 24) {
+      return 1.5; // 50% increase
+    } else if (hoursUntilEvent <= 72) {
+      return 1.25; // 25% increase
+    } else if (hoursUntilEvent <= 168) { // 1 week
+      return 1.1; // 10% increase
+    }
+
+    // Early bird discount
+    if (hoursUntilEvent >= 720) { // 30+ days out
+      return 0.85; // 15% discount
+    }
+
+    return 1.0;
+  }
+
+  async getSuggestedPrice(
+    eventId: string,
+    tierId: string,
+    includeTimeMultiplier: boolean = true
+  ): Promise<{
+    basePrice: bigint;
+    suggestedPrice: bigint;
+    capacityMultiplier: number;
+    timeMultiplier: number;
+    finalMultiplier: number;
+  }> {
+    const tier = await this.prisma.ticketTier.findUnique({
+      where: { id: tierId },
+    });
+
+    if (!tier) {
+      throw new Error('Tier not found');
+    }
+
+    const dynamicPrice = await this.calculateDynamicPrice(tierId);
+    const capacityMultiplier = Number(dynamicPrice) / Number(tier.price);
+    
+    let timeMultiplier = 1.0;
+    if (includeTimeMultiplier) {
+      timeMultiplier = await this.getTimeSensitiveMultiplier(eventId);
+    }
+
+    const finalMultiplier = capacityMultiplier * timeMultiplier;
+    const suggestedPrice = BigInt(Math.floor(Number(tier.price) * finalMultiplier));
+
+    return {
+      basePrice: tier.price,
+      suggestedPrice,
+      capacityMultiplier,
+      timeMultiplier,
+      finalMultiplier,
+    };
+  }
+
+  async recordPriceHistory(tierId: string, price: bigint, reason: string) {
+    // In a real system, you'd have a price_history table
+    // For now, we'll update the tier's metadata
+    const tier = await this.prisma.ticketTier.findUnique({
+      where: { id: tierId },
+    });
+
+    const history = (tier?.metadata as any)?.priceHistory || [];
+    history.push({
+      price: price.toString(),
+      timestamp: new Date(),
+      reason,
+    });
+
+    await this.prisma.ticketTier.update({
+      where: { id: tierId },
+      data: {
+        metadata: {
+          ...(tier?.metadata as any || {}),
+          priceHistory: history,
+        },
+      },
+    });
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/services/scheduleService.ts ===
+=== START OF FILE ===
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+import { RRule } from 'rrule';
+
+@Injectable()
+export class ScheduleService {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  async createRecurringEvent(
+    templateEventId: string,
+    recurrenceRule: string,
+    startDate: Date,
+    endDate?: Date
+  ) {
+    // Parse the recurrence rule
+    const rule = RRule.fromString(recurrenceRule);
+    
+    // Generate occurrences
+    const occurrences = rule.between(
+      startDate,
+      endDate || new Date(startDate.getTime() + 365 * 24 * 60 * 60 * 1000) // 1 year default
+    );
+
+    // Get template event
+    const templateEvent = await this.prisma.event.findUnique({
+      where: { id: templateEventId },
+      include: { tiers: true },
+    });
+
+    if (!templateEvent) {
+      throw new Error('Template event not found');
+    }
+
+    // Create events for each occurrence
+    const events = [];
+    for (const occurrence of occurrences) {
+      const event = await this.prisma.event.create({
+        data: {
+          eventId: BigInt(Date.now() + Math.random() * 1000),
+          name: templateEvent.name,
+          description: templateEvent.description,
+          venueId: templateEvent.venueId,
+          organizerWallet: templateEvent.organizerWallet,
+          startTime: occurrence,
+          endTime: new Date(occurrence.getTime() + (templateEvent.endTime.getTime() - templateEvent.startTime.getTime())),
+          totalTickets: templateEvent.totalTickets,
+          generalPrice: templateEvent.generalPrice,
+          vipPrice: templateEvent.vipPrice,
+          transferable: templateEvent.transferable,
+          metadata: {
+            ...(templateEvent.metadata as any || {}),
+            recurringEventId: templateEventId,
+            recurrenceRule,
+          },
+        },
+      });
+
+      // Create tiers for each event
+      for (const tier of templateEvent.tiers) {
+        await this.prisma.ticketTier.create({
+          data: {
+            eventId: event.id,
+            name: tier.name,
+            price: tier.price,
+            totalSupply: tier.totalSupply,
+            dynamicPricing: tier.dynamicPricing,
+            minPrice: tier.minPrice,
+            maxPrice: tier.maxPrice,
+            metadata: tier.metadata,
+          },
+        });
+      }
+
+      events.push(event);
+    }
+
+    return events;
+  }
+
+  async getUpcomingEvents(
+    organizerWallet?: string,
+    venueId?: string,
+    days: number = 30
+  ) {
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + days);
+
+    return this.prisma.event.findMany({
+      where: {
+        startTime: {
+          gte: startDate,
+          lte: endDate,
+        },
+        cancelled: false,
+        ...(organizerWallet && { organizerWallet }),
+        ...(venueId && { venueId }),
+      },
+      include: {
+        venue: true,
+        tiers: true,
+      },
+      orderBy: {
+        startTime: 'asc',
+      },
+    });
+  }
+
+  async getEventCalendar(
+    year: number,
+    month: number,
+    venueId?: string
+  ) {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+
+    const events = await this.prisma.event.findMany({
+      where: {
+        startTime: {
+          gte: startDate,
+          lte: endDate,
+        },
+        cancelled: false,
+        ...(venueId && { venueId }),
+      },
+      select: {
+        id: true,
+        name: true,
+        startTime: true,
+        endTime: true,
+        status: true,
+      },
+    });
+
+    // Group by day
+    const calendar: Record<number, any[]> = {};
+    
+    events.forEach(event => {
+      const day = event.startTime.getDate();
+      if (!calendar[day]) {
+        calendar[day] = [];
+      }
+      calendar[day].push(event);
+    });
+
+    return calendar;
+  }
+
+  async checkConflicts(
+    venueId: string,
+    startTime: Date,
+    endTime: Date,
+    excludeEventId?: string
+  ): Promise<boolean> {
+    const conflicts = await this.prisma.event.count({
+      where: {
+        venueId,
+        cancelled: false,
+        ...(excludeEventId && { id: { not: excludeEventId } }),
+        OR: [
+          {
+            // Event starts during our time window
+            startTime: {
+              gte: startTime,
+              lt: endTime,
+            },
+          },
+          {
+            // Event ends during our time window
+            endTime: {
+              gt: startTime,
+              lte: endTime,
+            },
+          },
+          {
+            // Event completely encompasses our time window
+            startTime: {
+              lte: startTime,
+            },
+            endTime: {
+              gte: endTime,
+            },
+          },
+        ],
+      },
+    });
+
+    return conflicts > 0;
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/services/tierService.ts ===
+=== START OF FILE ===
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class TierService {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  async createTier(eventId: string, data: {
+    name: string;
+    price: bigint;
+    totalSupply: number;
+    dynamicPricing?: boolean;
+    minPrice?: bigint;
+    maxPrice?: bigint;
+    metadata?: any;
+  }) {
+    // Validate price ranges
+    if (data.dynamicPricing) {
+      if (!data.minPrice || !data.maxPrice) {
+        throw new BadRequestException('Dynamic pricing requires min and max prices');
+      }
+      if (data.minPrice >= data.maxPrice) {
+        throw new BadRequestException('Min price must be less than max price');
+      }
+      if (data.price < data.minPrice || data.price > data.maxPrice) {
+        throw new BadRequestException('Base price must be within min/max range');
+      }
+    }
+
+    return this.prisma.ticketTier.create({
+      data: {
+        eventId,
+        name: data.name,
+        price: data.price,
+        totalSupply: data.totalSupply,
+        dynamicPricing: data.dynamicPricing || false,
+        minPrice: data.minPrice,
+        maxPrice: data.maxPrice,
+        metadata: data.metadata,
+      },
+    });
+  }
+
+  async updateTier(id: string, data: any) {
+    const tier = await this.prisma.ticketTier.findUnique({
+      where: { id },
+    });
+
+    if (!tier) {
+      throw new BadRequestException('Tier not found');
+    }
+
+    // Don't allow reducing supply below minted count
+    if (data.totalSupply && data.totalSupply < tier.mintedCount) {
+      throw new BadRequestException('Cannot reduce supply below minted count');
+    }
+
+    return this.prisma.ticketTier.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async getAvailability(tierId: string) {
+    const tier = await this.prisma.ticketTier.findUnique({
+      where: { id: tierId },
+    });
+
+    if (!tier) {
+      throw new BadRequestException('Tier not found');
+    }
+
+    return {
+      name: tier.name,
+      available: tier.totalSupply - tier.mintedCount,
+      total: tier.totalSupply,
+      sold: tier.mintedCount,
+      percentageSold: (tier.mintedCount / tier.totalSupply) * 100,
+      currentPrice: tier.price,
+    };
+  }
+
+  async getTiersForEvent(eventId: string) {
+    return this.prisma.ticketTier.findMany({
+      where: { eventId },
+      orderBy: { price: 'asc' },
+    });
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/services/venueService.ts ===
+=== START OF FILE ===
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class VenueService {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  async create(data: {
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+    latitude: number;
+    longitude: number;
+    capacity: number;
+    venueType: string;
+    amenities: string[];
+    ownerWallet: string;
+  }) {
+    // Check if venue already exists at this location
+    const existing = await this.prisma.venue.findFirst({
+      where: {
+        latitude: data.latitude,
+        longitude: data.longitude,
+      },
+    });
+
+    if (existing) {
+      throw new ConflictException('Venue already exists at this location');
+    }
+
+    return this.prisma.venue.create({
+      data: {
+        ...data,
+        amenities: JSON.stringify(data.amenities), // Convert array to JSON string
+        verified: false, // Venues need verification
+      },
+    });
+  }
+
+  async findAll(filters?: {
+    city?: string;
+    state?: string;
+    venueType?: string;
+    verified?: boolean;
+    ownerWallet?: string;
+  }) {
+    const venues = await this.prisma.venue.findMany({
+      where: {
+        ...(filters?.city && { city: filters.city }),
+        ...(filters?.state && { state: filters.state }),
+        ...(filters?.venueType && { venueType: filters.venueType }),
+        ...(filters?.verified !== undefined && { verified: filters.verified }),
+        ...(filters?.ownerWallet && { ownerWallet: filters.ownerWallet }),
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    // Parse amenities JSON back to array
+    return venues.map(venue => ({
+      ...venue,
+      amenities: venue.amenities ? JSON.parse(venue.amenities) : [],
+    }));
+  }
+
+  async findOne(id: string) {
+    const venue = await this.prisma.venue.findUnique({
+      where: { id },
+      include: {
+        events: {
+          where: {
+            startTime: {
+              gte: new Date(),
+            },
+          },
+          orderBy: {
+            startTime: 'asc',
+          },
+          take: 10,
+        },
+      },
+    });
+
+    if (!venue) {
+      throw new NotFoundException('Venue not found');
+    }
+
+    return {
+      ...venue,
+      amenities: venue.amenities ? JSON.parse(venue.amenities) : [],
+    };
+  }
+
+  async update(id: string, data: any) {
+    await this.findOne(id); // Check exists
+    
+    // If amenities is being updated, stringify it
+    if (data.amenities && Array.isArray(data.amenities)) {
+      data.amenities = JSON.stringify(data.amenities);
+    }
+    
+    const updated = await this.prisma.venue.update({
+      where: { id },
+      data,
+    });
+
+    return {
+      ...updated,
+      amenities: updated.amenities ? JSON.parse(updated.amenities) : [],
+    };
+  }
+
+  async verify(id: string, verified: boolean = true) {
+    const updated = await this.prisma.venue.update({
+      where: { id },
+      data: { verified },
+    });
+
+    return {
+      ...updated,
+      amenities: updated.amenities ? JSON.parse(updated.amenities) : [],
+    };
+  }
+
+  async findNearby(latitude: number, longitude: number, radiusKm: number = 50) {
+    // Using a simple bounding box for now
+    // In production, use PostGIS for accurate distance calculations
+    const latDelta = radiusKm / 111; // Rough conversion
+    const lonDelta = radiusKm / (111 * Math.cos(latitude * Math.PI / 180));
+
+    const venues = await this.prisma.venue.findMany({
+      where: {
+        latitude: {
+          gte: latitude - latDelta,
+          lte: latitude + latDelta,
+        },
+        longitude: {
+          gte: longitude - lonDelta,
+          lte: longitude + lonDelta,
+        },
+        verified: true,
+      },
+    });
+
+    return venues.map(venue => ({
+      ...venue,
+      amenities: venue.amenities ? JSON.parse(venue.amenities) : [],
+    }));
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/dto/event.dto.ts ===
+=== START OF FILE ===
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsBoolean, IsArray, IsDateString, Min, ArrayMinSize } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class CreateEventDto {
+  @ApiProperty({ description: 'Event name' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiPropertyOptional({ description: 'Event description' })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @ApiProperty({ description: 'Venue ID' })
+  @IsString()
+  @IsNotEmpty()
+  venueId: string;
+
+  @ApiProperty({ description: 'Organizer wallet address' })
+  @IsString()
+  @IsNotEmpty()
+  organizerWallet: string;
+
+  @ApiProperty({ description: 'Event start time' })
+  @IsDateString()
+  startTime: string;
+
+  @ApiProperty({ description: 'Event end time' })
+  @IsDateString()
+  endTime: string;
+
+  @ApiProperty({ description: 'Total tickets available' })
+  @IsNumber()
+  @Min(1)
+  totalTickets: number;
+
+  @ApiProperty({ description: 'General admission price in lamports' })
+  @Transform(({ value }) => BigInt(value))
+  generalPrice: bigint;
+
+  @ApiProperty({ description: 'VIP price in lamports' })
+  @Transform(({ value }) => BigInt(value))
+  vipPrice: bigint;
+
+  @ApiPropertyOptional({ description: 'Additional ticket tiers' })
+  @IsArray()
+  @IsOptional()
+  tiers?: CreateTierDto[];
+
+  @ApiPropertyOptional({ description: 'Are tickets transferable?' })
+  @IsBoolean()
+  @IsOptional()
+  transferable?: boolean = true;
+}
+
+export class UpdateEventDto {
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  name?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @ApiPropertyOptional()
+  @IsDateString()
+  @IsOptional()
+  startTime?: string;
+
+  @ApiPropertyOptional()
+  @IsDateString()
+  @IsOptional()
+  endTime?: string;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  @Min(1)
+  @IsOptional()
+  totalTickets?: number;
+
+  @ApiPropertyOptional()
+  @Transform(({ value }) => value ? BigInt(value) : undefined)
+  @IsOptional()
+  generalPrice?: bigint;
+
+  @ApiPropertyOptional()
+  @Transform(({ value }) => value ? BigInt(value) : undefined)
+  @IsOptional()
+  vipPrice?: bigint;
+}
+
+export class CreateTierDto {
+  @ApiProperty({ description: 'Tier name' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ description: 'Tier price in lamports' })
+  @Transform(({ value }) => BigInt(value))
+  price: bigint;
+
+  @ApiProperty({ description: 'Total supply for this tier' })
+  @IsNumber()
+  @Min(1)
+  totalSupply: number;
+
+  @ApiPropertyOptional({ description: 'Enable dynamic pricing?' })
+  @IsBoolean()
+  @IsOptional()
+  dynamicPricing?: boolean;
+
+  @ApiPropertyOptional({ description: 'Minimum price for dynamic pricing' })
+  @Transform(({ value }) => value ? BigInt(value) : undefined)
+  @IsOptional()
+  minPrice?: bigint;
+
+  @ApiPropertyOptional({ description: 'Maximum price for dynamic pricing' })
+  @Transform(({ value }) => value ? BigInt(value) : undefined)
+  @IsOptional()
+  maxPrice?: bigint;
+}
+
+export class EventFilterDto {
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  organizerWallet?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  venueId?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  status?: string;
+
+  @ApiPropertyOptional()
+  @IsDateString()
+  @IsOptional()
+  startDate?: string;
+
+  @ApiPropertyOptional()
+  @IsDateString()
+  @IsOptional()
+  endDate?: string;
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/dto/venue.dto.ts ===
+=== START OF FILE ===
+import { IsString, IsNotEmpty, IsNumber, IsArray, IsOptional, IsEnum, Min, Max } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export enum VenueType {
+  CLUB = 'CLUB',
+  THEATER = 'THEATER',
+  ARENA = 'ARENA',
+  STADIUM = 'STADIUM',
+  OUTDOOR = 'OUTDOOR',
+  OTHER = 'OTHER'
+}
+
+export class CreateVenueDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  address: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  city: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  state: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  country: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  postalCode: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  latitude: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  longitude: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(1)
+  capacity: number;
+
+  @ApiProperty({ enum: VenueType })
+  @IsEnum(VenueType)
+  venueType: VenueType;
+
+  @ApiProperty()
+  @IsArray()
+  @IsString({ each: true })
+  amenities: string[];
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  ownerWallet: string;
+}
+
+export class VenueFilterDto {
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  city?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  state?: string;
+
+  @ApiPropertyOptional({ enum: VenueType })
+  @IsEnum(VenueType)
+  @IsOptional()
+  venueType?: VenueType;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  verified?: boolean;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  ownerWallet?: string;
+}
+
+export class NearbyVenueDto {
+  @ApiProperty()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  latitude: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  longitude: number;
+
+  @ApiPropertyOptional({ default: 50 })
+  @IsNumber()
+  @Min(1)
+  @Max(500)
+  @IsOptional()
+  radiusKm?: number = 50;
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/app.module.ts ===
+=== START OF FILE ===
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { EventModule } from './event.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    EventModule,
+  ],
+})
+export class AppModule {}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/event-service/src/event.module.ts ===
+=== START OF FILE ===
+import { Module } from '@nestjs/common';
+import { EventController } from './controllers/eventController';
+import { VenueController } from './controllers/venueController';
+import { ScheduleController } from './controllers/scheduleController';
+import { EventService } from './services/eventService';
+import { VenueService } from './services/venueService';
+import { TierService } from './services/tierService';
+import { CapacityManager } from './services/capacityManager';
+import { PricingEngine } from './services/pricingEngine';
+import { ScheduleService } from './services/scheduleService';
+
+@Module({
+  controllers: [EventController, VenueController, ScheduleController],
+  providers: [
+    EventService,
+    VenueService,
+    TierService,
+    CapacityManager,
+    PricingEngine,
+    ScheduleService,
+  ],
+  exports: [EventService, VenueService, TierService],
+})
+export class EventModule {}
+=== END OF FILE ===
+
+
+========================================
+SERVICE: ticket-service
+========================================
+
+=== FILE: backend/services/ticket-service/package.json ===
+=== START OF FILE ===
+{
+  "name": "ticket-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "build": "nest build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@nestjs/bullmq": "^11.0.2",
+    "@nestjs/common": "^11.1.3",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.3",
+    "@nestjs/platform-express": "^11.1.3",
+    "@nestjs/swagger": "^11.2.0",
+    "@prisma/client": "^6.10.1",
+    "@sendgrid/mail": "^8.1.5",
+    "@solana/web3.js": "^1.98.2",
+    "bs58": "^6.0.0",
+    "bullmq": "^5.54.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "ioredis": "^5.6.1",
+    "nodemailer": "^7.0.3",
+    "prisma": "^6.10.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.7",
+    "@types/node": "^24.0.3",
+    "@types/nodemailer": "^6.4.17",
+    "@types/qrcode": "^1.5.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/tsconfig.json ===
+=== START OF FILE ===
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/prisma/schema.prisma ===
+=== START OF FILE ===
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Ticket {
+  id                String   @id @default(uuid())
+  ticketId          BigInt   @unique @map("ticket_id")
+  eventId           String   @map("event_id")
+  ticketPDA         String   @unique @map("ticket_pda")
+  ownerWallet       String   @map("owner_wallet")
+  ownerEmail        String?  @map("owner_email")
+  
+  tier              String
+  purchasePrice     BigInt   @map("purchase_price")
+  
+  mintJobId         String?  @map("mint_job_id")
+  mintStatus        String   @default("PENDING") @map("mint_status")
+  mintedAt          DateTime? @map("minted_at")
+  transactionId     String?  @map("transaction_id")
+  
+  qrCode            String?  
+  verificationCode  String?  @map("verification_code")
+  
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  
+  @@index([eventId])
+  @@index([ownerWallet])
+  @@index([ownerEmail])
+  @@map("tickets")
+}
+
+model MintJob {
+  id            String   @id @default(uuid())
+  jobId         String   @unique @map("job_id")
+  eventId       String   @map("event_id")
+  userId        String   @map("user_id")
+  status        String
+  attempts      Int      @default(0)
+  error         String?
+  result        String?
+  
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  @@index([eventId])
+  @@index([userId])
+  @@map("mint_jobs")
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/main.ts ===
+=== START OF FILE ===
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  
+  app.enableCors();
+  
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+  }));
+  
+  const config = new DocumentBuilder()
+    .setTitle('TicketToken Ticket Service')
+    .setDescription('Ticket minting and delivery service')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+  
+  await app.listen(3002);
+  console.log('Ticket Service running on http://localhost:3002');
+}
+bootstrap();
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/services/batchService.ts ===
+=== START OF FILE ===
+import { Injectable, Logger } from '@nestjs/common';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
+
+@Injectable()
+export class BatchService {
+  private logger = new Logger(BatchService.name);
+
+  constructor(
+    @InjectQueue('batch-operations') private batchQueue: Queue,
+  ) {}
+
+  async processBulkPurchase(data: {
+    eventId: string;
+    purchases: Array<{
+      email: string;
+      walletAddress?: string;
+      tier: string;
+      quantity: number;
+    }>;
+    paymentId: string;
+    organizerWallet: string;
+  }): Promise<{
+    batchId: string;
+    totalTickets: number;
+    estimatedTime: string;
+  }> {
+    const batchId = `batch-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const totalTickets = data.purchases.reduce((sum, p) => sum + p.quantity, 0);
+
+    // Queue the batch job
+    const job = await this.batchQueue.add('bulk-purchase', {
+      batchId,
+      ...data,
+      timestamp: Date.now(),
+    }, {
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 5000,
+      },
+    });
+
+    this.logger.log(`Queued bulk purchase batch ${batchId} with ${totalTickets} tickets`);
+
+    return {
+      batchId,
+      totalTickets,
+      estimatedTime: `${Math.ceil(totalTickets / 10) * 30} seconds`,
+    };
+  }
+
+  async processBulkTransfer(data: {
+    fromWallet: string;
+    transfers: Array<{
+      ticketId: string;
+      toWallet: string;
+      toEmail?: string;
+    }>;
+  }): Promise<{
+    batchId: string;
+    totalTransfers: number;
+    status: string;
+  }> {
+    const batchId = `transfer-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    const job = await this.batchQueue.add('bulk-transfer', {
+      batchId,
+      ...data,
+      timestamp: Date.now(),
+    }, {
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 3000,
+      },
+    });
+
+    this.logger.log(`Queued bulk transfer batch ${batchId} with ${data.transfers.length} transfers`);
+
+    return {
+      batchId,
+      totalTransfers: data.transfers.length,
+      status: 'queued',
+    };
+  }
+
+  async processBulkValidation(data: {
+    eventId: string;
+    validations: Array<{
+      ticketId: string;
+      gateId: string;
+      validatorId: string;
+    }>;
+  }): Promise<{
+    batchId: string;
+    results: Array<{
+      ticketId: string;
+      valid: boolean;
+      reason?: string;
+    }>;
+  }> {
+    // This would be used for group entries or VIP fast-track
+    const batchId = `validation-${Date.now()}`;
+    const results = [];
+
+    // In production, this would validate against blockchain
+    // For now, simulate validation
+    for (const validation of data.validations) {
+      results.push({
+        ticketId: validation.ticketId,
+        valid: true,
+        reason: undefined,
+      });
+    }
+
+    this.logger.log(`Processed bulk validation batch ${batchId}`);
+
+    return {
+      batchId,
+      results,
+    };
+  }
+
+  async getBatchStatus(batchId: string): Promise<{
+    status: string;
+    progress: number;
+    completedItems: number;
+    totalItems: number;
+    errors?: any[];
+  }> {
+    // Find job by searching through queues
+    const queues = ['batch-operations', 'minting'];
+    
+    for (const queueName of queues) {
+      const jobs = await this.batchQueue.getJobs(['active', 'waiting', 'completed', 'failed']);
+      const job = jobs.find(j => j.data.batchId === batchId);
+      
+      if (job) {
+        const state = await job.getState();
+        const progress = job.progress || 0;
+        
+        return {
+          status: state,
+          progress,
+          completedItems: Math.floor((progress / 100) * (job.data.totalTickets || 1)),
+          totalItems: job.data.totalTickets || 1,
+          errors: job.failedReason ? [job.failedReason] : undefined,
+        };
+      }
+    }
+
+    return {
+      status: 'not_found',
+      progress: 0,
+      completedItems: 0,
+      totalItems: 0,
+    };
+  }
+
+  async cancelBatch(batchId: string): Promise<boolean> {
+    try {
+      const jobs = await this.batchQueue.getJobs(['waiting', 'active']);
+      const job = jobs.find(j => j.data.batchId === batchId);
+      
+      if (job) {
+        await job.remove();
+        this.logger.log(`Cancelled batch ${batchId}`);
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      this.logger.error(`Failed to cancel batch: ${error.message}`);
+      return false;
+    }
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/services/deliveryService.ts ===
+=== START OF FILE ===
+import { Injectable, Logger } from '@nestjs/common';
+import * as nodemailer from 'nodemailer';
+
+@Injectable()
+export class DeliveryService {
+  private logger = new Logger(DeliveryService.name);
+  private transporter: nodemailer.Transporter;
+
+  constructor() {
+    // For now, just use SMTP (no SendGrid)
+    this.transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'localhost',
+      port: parseInt(process.env.SMTP_PORT || '1025'),
+      secure: false,
+      auth: process.env.SMTP_USER ? {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      } : undefined,
+    });
+  }
+
+  async sendTicketEmail(data: {
+    to: string;
+    ticketId: string;
+    eventName: string;
+    eventDate: Date;
+    venueName: string;
+    venueAddress: string;
+    tier: string;
+    qrDataUrl: string;
+    ticketPDA: string;
+  }): Promise<boolean> {
+    try {
+      const subject = `Your Ticket for ${data.eventName}`;
+      
+      const html = this.generateTicketEmailHTML({
+        ...data,
+        confirmationNumber: data.ticketId.substring(0, 8).toUpperCase(),
+      });
+
+      // Use SMTP
+      await this.transporter.sendMail({
+        from: process.env.EMAIL_FROM || 'tickets@tickettoken.io',
+        to: data.to,
+        subject,
+        html,
+        attachments: [
+          {
+            filename: 'ticket-qr.png',
+            content: data.qrDataUrl.split(',')[1],
+            encoding: 'base64',
+            cid: 'qrcode',
+          },
+        ],
+      });
+
+      this.logger.log(`Ticket email sent to ${data.to}`);
+      return true;
+    } catch (error) {
+      this.logger.error(`Failed to send ticket email: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async sendPurchaseConfirmation(data: {
+    to: string;
+    orderNumber: string;
+    eventName: string;
+    quantity: number;
+    totalAmount: string;
+    paymentMethod: string;
+  }): Promise<boolean> {
+    try {
+      const subject = `Order Confirmation - ${data.orderNumber}`;
+      const html = this.generatePurchaseConfirmationHTML(data);
+
+      await this.transporter.sendMail({
+        from: process.env.EMAIL_FROM || 'tickets@tickettoken.io',
+        to: data.to,
+        subject,
+        html,
+      });
+
+      return true;
+    } catch (error) {
+      this.logger.error(`Failed to send confirmation email: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async sendBatchTickets(
+    recipients: Array<{
+      email: string;
+      tickets: Array<{
+        ticketId: string;
+        qrDataUrl: string;
+        tier: string;
+      }>;
+    }>,
+    eventDetails: {
+      eventName: string;
+      eventDate: Date;
+      venueName: string;
+      venueAddress: string;
+    }
+  ): Promise<{ sent: number; failed: number }> {
+    let sent = 0;
+    let failed = 0;
+
+    for (const recipient of recipients) {
+      try {
+        for (const ticket of recipient.tickets) {
+          await this.sendTicketEmail({
+            to: recipient.email,
+            ticketId: ticket.ticketId,
+            ...eventDetails,
+            tier: ticket.tier,
+            qrDataUrl: ticket.qrDataUrl,
+            ticketPDA: ticket.ticketId, // Using ticketId as placeholder
+          });
+          sent++;
+        }
+      } catch (error) {
+        this.logger.error(`Failed to send to ${recipient.email}: ${error.message}`);
+        failed++;
+      }
+    }
+
+    return { sent, failed };
+  }
+
+  private generateTicketEmailHTML(data: any): string {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Your Ticket</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+          .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+          .header { background-color: #7c3aed; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; }
+          .ticket-info { background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
+          .qr-code { text-align: center; margin: 30px 0; }
+          .footer { background-color: #1f2937; color: white; padding: 20px; text-align: center; }
+          h1 { margin: 0; }
+          .info-row { margin: 10px 0; }
+          .label { font-weight: bold; color: #6b7280; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎫 Your Ticket is Ready!</h1>
+          </div>
+          
+          <div class="content">
+            <p>Hi there!</p>
+            <p>Your ticket for <strong>${data.eventName}</strong> is confirmed and ready to use.</p>
+            
+            <div class="ticket-info">
+              <div class="info-row">
+                <span class="label">Confirmation #:</span> ${data.confirmationNumber}
+              </div>
+              <div class="info-row">
+                <span class="label">Event:</span> ${data.eventName}
+              </div>
+              <div class="info-row">
+                <span class="label">Date:</span> ${new Date(data.eventDate).toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit'
+                })}
+              </div>
+              <div class="info-row">
+                <span class="label">Venue:</span> ${data.venueName}
+              </div>
+              <div class="info-row">
+                <span class="label">Address:</span> ${data.venueAddress}
+              </div>
+              <div class="info-row">
+                <span class="label">Ticket Type:</span> ${data.tier.toUpperCase()}
+              </div>
+            </div>
+            
+            <div class="qr-code">
+              <p><strong>Show this QR code at the entrance:</strong></p>
+              <img src="cid:qrcode" alt="Ticket QR Code" style="width: 300px; height: 300px;">
+            </div>
+            
+            <p><strong>Important Information:</strong></p>
+            <ul>
+              <li>Please arrive 30 minutes before the event starts</li>
+              <li>This QR code is your ticket - screenshot it or save this email</li>
+              <li>Each QR code can only be scanned once</li>
+              <li>Tickets are non-refundable unless the event is cancelled</li>
+            </ul>
+          </div>
+          
+          <div class="footer">
+            <p>Powered by TicketToken - Blockchain Ticketing</p>
+            <p>Need help? Contact support@tickettoken.io</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  private generatePurchaseConfirmationHTML(data: any): string {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Order Confirmation</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+          .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+          .header { background-color: #10b981; color: white; padding: 30px; text-align: center; }
+          .content { padding: 30px; }
+          .order-details { background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
+          .footer { background-color: #1f2937; color: white; padding: 20px; text-align: center; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✅ Order Confirmed!</h1>
+          </div>
+          
+          <div class="content">
+            <p>Thank you for your purchase!</p>
+            
+            <div class="order-details">
+              <h3>Order Details</h3>
+              <p><strong>Order Number:</strong> ${data.orderNumber}</p>
+              <p><strong>Event:</strong> ${data.eventName}</p>
+              <p><strong>Quantity:</strong> ${data.quantity} ticket(s)</p>
+              <p><strong>Total Amount:</strong> ${data.totalAmount}</p>
+              <p><strong>Payment Method:</strong> ${data.paymentMethod}</p>
+            </div>
+            
+            <p>Your tickets will be sent to this email address shortly.</p>
+            <p>You can also access your tickets anytime by logging into your account.</p>
+          </div>
+          
+          <div class="footer">
+            <p>Thank you for choosing TicketToken!</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/services/mintingService.ts ===
+=== START OF FILE ===
+import { Injectable, Logger } from '@nestjs/common';
+import { Connection, PublicKey, Keypair, Transaction, SystemProgram } from '@solana/web3.js';
+import * as anchor from '@coral-xyz/anchor';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
+import bs58 from 'bs58';
+
+@Injectable()
+export class MintingService {
+  private logger = new Logger(MintingService.name);
+  private connection: Connection;
+  private program: anchor.Program;
+  
+  constructor(
+    @InjectQueue('minting') private mintingQueue: Queue,
+  ) {
+    this.connection = new Connection(process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com');
+    // Initialize Anchor program here
+  }
+
+  async mintTicket(data: {
+    eventId: string;
+    eventPDA: string;
+    buyerWallet: string;
+    tier: string;
+    price: bigint;
+    paymentId: string;
+  }) {
+    try {
+      this.logger.log(`Minting ticket for event ${data.eventId}, buyer ${data.buyerWallet}`);
+      
+      // Queue the minting job for async processing
+      const job = await this.mintingQueue.add('mint-single', {
+        ...data,
+        timestamp: Date.now(),
+      }, {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 2000,
+        },
+      });
+
+      return {
+        jobId: job.id,
+        status: 'queued',
+        estimatedTime: '10-30 seconds',
+      };
+    } catch (error) {
+      this.logger.error(`Failed to queue minting: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async batchMintTickets(data: {
+    eventId: string;
+    eventPDA: string;
+    buyerWallet: string;
+    tier: string;
+    quantity: number;
+    totalPrice: bigint;
+    paymentId: string;
+  }) {
+    this.logger.log(`Batch minting ${data.quantity} tickets for event ${data.eventId}`);
+    
+    // For large batches, split into chunks of 10
+    const batchSize = 10;
+    const batches = Math.ceil(data.quantity / batchSize);
+    const jobs = [];
+
+    for (let i = 0; i < batches; i++) {
+      const start = i * batchSize;
+      const end = Math.min((i + 1) * batchSize, data.quantity);
+      const quantity = end - start;
+
+      const job = await this.mintingQueue.add('mint-batch', {
+        ...data,
+        quantity,
+        batchIndex: i,
+        totalBatches: batches,
+      }, {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 2000,
+        },
+      });
+
+      jobs.push(job.id);
+    }
+
+    return {
+      jobIds: jobs,
+      status: 'queued',
+      batches,
+      totalQuantity: data.quantity,
+    };
+  }
+
+  async processMintJob(job: any) {
+    const { data } = job;
+    
+    try {
+      // TODO: Actual blockchain minting logic here
+      // For now, simulate the minting
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Generate ticket IDs
+      const ticketIds = [];
+      const quantity = data.quantity || 1;
+      
+      for (let i = 0; i < quantity; i++) {
+        ticketIds.push({
+          ticketId: Date.now() + i,
+          ticketPDA: this.generateMockPDA(),
+          transactionId: this.generateMockTxId(),
+        });
+      }
+
+      this.logger.log(`Successfully minted ${quantity} tickets`);
+      
+      return {
+        success: true,
+        ticketIds,
+        eventId: data.eventId,
+        buyerWallet: data.buyerWallet,
+      };
+    } catch (error) {
+      this.logger.error(`Minting failed: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async getMintingStatus(jobId: string) {
+    const job = await this.mintingQueue.getJob(jobId);
+    if (!job) {
+      return null;
+    }
+
+    const state = await job.getState();
+    const progress = job.progress;
+
+    return {
+      jobId,
+      state,
+      progress,
+      data: job.data,
+      result: job.returnvalue,
+      failedReason: job.failedReason,
+    };
+  }
+
+  private generateMockPDA(): string {
+    // Temporary mock - replace with actual PDA generation
+    return bs58.encode(Buffer.from(new Uint8Array(32).map(() => Math.floor(Math.random() * 256))));
+  }
+
+  private generateMockTxId(): string {
+    // Temporary mock - replace with actual transaction ID
+    return bs58.encode(Buffer.from(new Uint8Array(64).map(() => Math.floor(Math.random() * 256))));
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/services/qrService.ts ===
+=== START OF FILE ===
+import { Injectable, Logger } from '@nestjs/common';
+import * as QRCode from 'qrcode';
+import { createHash } from 'crypto';
+
+@Injectable()
+export class QRService {
+  private logger = new Logger(QRService.name);
+
+  async generateTicketQR(data: {
+    ticketId: string;
+    eventId: string;
+    ticketPDA: string;
+    owner: string;
+    tier: string;
+    eventDate: Date;
+  }): Promise<{
+    qrDataUrl: string;
+    qrBuffer: Buffer;
+    verificationCode: string;
+  }> {
+    try {
+      // Create verification code (for offline validation)
+      const verificationCode = this.generateVerificationCode(
+        data.ticketPDA,
+        data.owner,
+        data.eventDate
+      );
+
+      // Create QR data payload
+      const qrData = {
+        v: 1, // Version
+        t: data.ticketPDA, // Ticket PDA
+        e: data.eventId, // Event ID
+        o: data.owner.substring(0, 8), // Owner (truncated for size)
+        c: verificationCode, // Offline verification code
+        d: data.eventDate.getTime(), // Event timestamp
+      };
+
+      // Generate QR code as data URL
+      const qrDataUrl = await QRCode.toDataURL(JSON.stringify(qrData));
+
+      // Generate QR code as buffer
+      const qrBuffer = await QRCode.toBuffer(JSON.stringify(qrData));
+
+      this.logger.log(`Generated QR code for ticket ${data.ticketId}`);
+
+      return {
+        qrDataUrl,
+        qrBuffer,
+        verificationCode,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to generate QR code: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async generateEventQR(eventId: string, eventPDA: string): Promise<string> {
+    // Simple event QR for promotional purposes
+    const eventUrl = `${process.env.FRONTEND_URL || 'https://tickettoken.io'}/events/${eventId}`;
+    
+    return QRCode.toDataURL(eventUrl);
+  }
+
+  validateQRData(qrData: string): {
+    isValid: boolean;
+    data?: any;
+    error?: string;
+  } {
+    try {
+      const parsed = JSON.parse(qrData);
+      
+      // Check required fields
+      if (!parsed.v || !parsed.t || !parsed.e || !parsed.c) {
+        return {
+          isValid: false,
+          error: 'Missing required fields',
+        };
+      }
+
+      // Check version
+      if (parsed.v !== 1) {
+        return {
+          isValid: false,
+          error: 'Unsupported QR version',
+        };
+      }
+
+      return {
+        isValid: true,
+        data: parsed,
+      };
+    } catch (error) {
+      return {
+        isValid: false,
+        error: 'Invalid QR format',
+      };
+    }
+  }
+
+  verifyOfflineCode(
+    ticketPDA: string,
+    owner: string,
+    eventDate: Date,
+    providedCode: string
+  ): boolean {
+    const expectedCode = this.generateVerificationCode(ticketPDA, owner, eventDate);
+    return expectedCode === providedCode;
+  }
+
+  private generateVerificationCode(
+    ticketPDA: string,
+    owner: string,
+    eventDate: Date
+  ): string {
+    // Create a deterministic code for offline validation
+    const secret = process.env.QR_SECRET || 'default-secret-change-in-production';
+    const data = `${ticketPDA}-${owner}-${eventDate.toISOString()}-${secret}`;
+    const hash = createHash('sha256').update(data).digest('hex');
+    
+    // Return first 8 characters for brevity
+    return hash.substring(0, 8).toUpperCase();
+  }
+
+  async generateBulkQRCodes(
+    tickets: Array<{
+      ticketId: string;
+      eventId: string;
+      ticketPDA: string;
+      owner: string;
+      tier: string;
+      eventDate: Date;
+    }>
+  ): Promise<Map<string, { qrDataUrl: string; verificationCode: string }>> {
+    const results = new Map();
+
+    // Process in parallel but with concurrency limit
+    const concurrency = 10;
+    for (let i = 0; i < tickets.length; i += concurrency) {
+      const batch = tickets.slice(i, i + concurrency);
+      const batchResults = await Promise.all(
+        batch.map(ticket => this.generateTicketQR(ticket))
+      );
+
+      batch.forEach((ticket, index) => {
+        results.set(ticket.ticketId, {
+          qrDataUrl: batchResults[index].qrDataUrl,
+          verificationCode: batchResults[index].verificationCode,
+        });
+      });
+    }
+
+    return results;
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/services/walletService.ts ===
+=== START OF FILE ===
+import { Injectable, Logger } from '@nestjs/common';
+import { Keypair, PublicKey, Connection } from '@solana/web3.js';
+import bs58 from 'bs58';
+import { createHash } from 'crypto';
+
+@Injectable()
+export class WalletService {
+  private logger = new Logger(WalletService.name);
+  private connection: Connection;
+  private treasuryKeypair: Keypair;
+
+  constructor() {
+    this.connection = new Connection(process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com');
+    
+    // Initialize treasury wallet from seed
+    if (process.env.TREASURY_WALLET_SEED) {
+      const seed = createHash('sha256')
+        .update(process.env.TREASURY_WALLET_SEED)
+        .digest()
+        .slice(0, 32);
+      this.treasuryKeypair = Keypair.fromSeed(seed);
+      this.logger.log(`Treasury wallet: ${this.treasuryKeypair.publicKey.toBase58()}`);
+    }
+  }
+
+  async createCustodialWallet(userId: string): Promise<{
+    publicKey: string;
+    encryptedPrivateKey: string;
+  }> {
+    try {
+      // Generate deterministic wallet from user ID
+      const seed = createHash('sha256')
+        .update(`${process.env.WALLET_SEED_PREFIX || 'tickettoken'}-${userId}`)
+        .digest()
+        .slice(0, 32);
+      
+      const keypair = Keypair.fromSeed(seed);
+      
+      // In production, use proper key management service (AWS KMS, etc.)
+      const encryptedPrivateKey = this.encryptPrivateKey(keypair.secretKey);
+
+      this.logger.log(`Created custodial wallet for user ${userId}: ${keypair.publicKey.toBase58()}`);
+
+      return {
+        publicKey: keypair.publicKey.toBase58(),
+        encryptedPrivateKey,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to create custodial wallet: ${error.message}`);
+      throw error;
+    }
+  }
+
+  async getCustodialWalletBalance(publicKey: string): Promise<number> {
+    try {
+      const balance = await this.connection.getBalance(new PublicKey(publicKey));
+      return balance / 1e9; // Convert lamports to SOL
+    } catch (error) {
+      this.logger.error(`Failed to get balance: ${error.message}`);
+      return 0;
+    }
+  }
+
+  async createTemporaryWallet(): Promise<{
+    publicKey: string;
+    privateKey: string;
+    expiresAt: Date;
+  }> {
+    // Create ephemeral wallet for one-time use
+    const keypair = Keypair.generate();
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24); // 24 hour expiry
+
+    return {
+      publicKey: keypair.publicKey.toBase58(),
+      privateKey: bs58.encode(keypair.secretKey),
+      expiresAt,
+    };
+  }
+
+  async prepareMigrationToPhantom(
+    custodialWalletPublicKey: string,
+    phantomWalletPublicKey: string
+  ): Promise<{
+    migrationId: string;
+    custodialWallet: string;
+    phantomWallet: string;
+    status: string;
+  }> {
+    // Prepare for migrating tickets from custodial to user's Phantom wallet
+    const migrationId = createHash('sha256')
+      .update(`${custodialWalletPublicKey}-${phantomWalletPublicKey}-${Date.now()}`)
+      .digest('hex')
+      .substring(0, 16);
+
+    // In production, this would initiate a multi-step migration process
+    this.logger.log(`Prepared migration ${migrationId} from ${custodialWalletPublicKey} to ${phantomWalletPublicKey}`);
+
+    return {
+      migrationId,
+      custodialWallet: custodialWalletPublicKey,
+      phantomWallet: phantomWalletPublicKey,
+      status: 'prepared',
+    };
+  }
+
+  validateSolanaAddress(address: string): boolean {
+    try {
+      new PublicKey(address);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async checkWalletExists(publicKey: string): Promise<boolean> {
+    try {
+      const accountInfo = await this.connection.getAccountInfo(new PublicKey(publicKey));
+      return accountInfo !== null;
+    } catch (error) {
+      this.logger.error(`Failed to check wallet: ${error.message}`);
+      return false;
+    }
+  }
+
+  private encryptPrivateKey(privateKey: Uint8Array): string {
+    // WARNING: This is a placeholder. In production, use proper encryption
+    // with AWS KMS, HashiCorp Vault, or similar key management service
+    const base64 = Buffer.from(privateKey).toString('base64');
+    return `encrypted:${base64}`; // This is NOT secure - just for development
+  }
+
+  private decryptPrivateKey(encryptedKey: string): Uint8Array {
+    // WARNING: This is a placeholder. In production, use proper decryption
+    const base64 = encryptedKey.replace('encrypted:', '');
+    return new Uint8Array(Buffer.from(base64, 'base64'));
+  }
+
+  getTreasuryWallet(): string {
+    return this.treasuryKeypair?.publicKey.toBase58() || '';
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/app.module.ts ===
+=== START OF FILE ===
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { BullModule } from '@nestjs/bullmq';
+import { TicketModule } from './ticket.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+      },
+    }),
+    TicketModule,
+  ],
+})
+export class AppModule {}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/ticket-service/src/ticket.module.ts ===
+=== START OF FILE ===
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
+import { MintingService } from './services/mintingService';
+import { QRService } from './services/qrService';
+import { DeliveryService } from './services/deliveryService';
+import { WalletService } from './services/walletService';
+import { BatchService } from './services/batchService';
+
+@Module({
+  imports: [
+    BullModule.registerQueue(
+      { name: 'minting' },
+      { name: 'batch-operations' }
+    ),
+  ],
+  providers: [
+    MintingService,
+    QRService,
+    DeliveryService,
+    WalletService,
+    BatchService,
+  ],
+  exports: [
+    MintingService,
+    QRService,
+    DeliveryService,
+    WalletService,
+    BatchService,
+  ],
+})
+export class TicketModule {}
+=== END OF FILE ===
+
+
+========================================
+SERVICE: user-service
+========================================
+
+=== FILE: backend/services/user-service/package.json ===
+=== START OF FILE ===
+{
+  "name": "user-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "build": "nest build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@aws-sdk/client-kms": "^3.830.0",
+    "@coral-xyz/anchor": "^0.31.1",
+    "@nestjs/bullmq": "^11.0.2",
+    "@nestjs/common": "^11.1.3",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.1.3",
+    "@nestjs/platform-express": "^11.1.3",
+    "@nestjs/swagger": "^11.2.0",
+    "@prisma/client": "^6.10.1",
+    "@solana/web3.js": "^1.98.2",
+    "bcrypt": "^6.0.0",
+    "bs58": "^6.0.0",
+    "bullmq": "^5.54.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "crypto-js": "^4.2.0",
+    "ioredis": "^5.6.1",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.10.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.7",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/user-service/tsconfig.json ===
+=== START OF FILE ===
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/user-service/prisma/schema.prisma ===
+=== START OF FILE ===
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(uuid())
+  email            String   @unique
+  phoneNumber      String?  @map("phone_number")
+  
+  walletPreference String   @default("CUSTODIAL") @map("wallet_preference")
+  custodialWallet  String?  @map("custodial_wallet")
+  phantomWallet    String?  @map("phantom_wallet")
+  
+  encryptedSeed    String?  @map("encrypted_seed")
+  
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  
+  walletHistory    WalletHistory[]
+  
+  @@index([email])
+  @@index([custodialWallet])
+  @@index([phantomWallet])
+  @@map("users")
+}
+
+model WalletHistory {
+  id              String   @id @default(uuid())
+  userId          String   @map("user_id")
+  user            User     @relation(fields: [userId], references: [id])
+  
+  action          String
+  walletType      String   @map("wallet_type")
+  walletAddress   String   @map("wallet_address")
+  metadata        String?
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+  
+  @@index([userId])
+  @@map("wallet_history")
+}
+
+model MigrationJob {
+  id              String   @id @default(uuid())
+  migrationId     String   @unique @map("migration_id")
+  userId          String   @map("user_id")
+  
+  fromWallet      String   @map("from_wallet")
+  toWallet        String   @map("to_wallet")
+  
+  status          String
+  progress        Int      @default(0)
+  ticketsMigrated Int      @default(0) @map("tickets_migrated")
+  totalTickets    Int      @default(0) @map("total_tickets")
+  
+  error           String?
+  completedAt     DateTime? @map("completed_at")
+  
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  
+  @@index([userId])
+  @@map("migration_jobs")
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/user-service/src/main.ts ===
+=== START OF FILE ===
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  
+  app.enableCors();
+  
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+  }));
+  
+  const config = new DocumentBuilder()
+    .setTitle('TicketToken User Service')
+    .setDescription('User and wallet management service')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+  
+  await app.listen(3003);
+  console.log('User Service running on http://localhost:3003');
+}
+bootstrap();
+=== END OF FILE ===
+
+
+=== FILE: backend/services/user-service/src/controllers/wallet.controller.ts ===
+=== START OF FILE ===
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CustodialWalletService } from '../services/walletManager/custodialWallet';
+import { PhantomIntegrationService } from '../services/walletManager/phantomIntegration';
+import { WalletMigrationService } from '../services/walletManager/walletMigration';
+import { WalletAnalyticsService } from '../services/walletManager/walletAnalytics';
+import {
+  CreateWalletDto,
+  ConnectPhantomDto,
+  MigrateWalletDto,
+  WalletBalanceDto,
+} from '../dto/wallet.dto';
+
+@ApiTags('Wallets')
+@Controller('wallets')
+export class WalletController {
+  constructor(
+    private readonly custodialService: CustodialWalletService,
+    private readonly phantomService: PhantomIntegrationService,
+    private readonly migrationService: WalletMigrationService,
+    private readonly analyticsService: WalletAnalyticsService,
+  ) {}
+
+  @Post('create')
+  @ApiOperation({ summary: 'Create a new wallet (custodial or request Phantom connection)' })
+  @ApiResponse({ status: 201, description: 'Wallet created or connection URL generated' })
+  async createWallet(@Body() createWalletDto: CreateWalletDto) {
+    if (createWalletDto.walletType === 'CUSTODIAL') {
+      const wallet = await this.custodialService.createCustodialWallet(
+        createWalletDto.email,
+        createWalletDto.userId
+      );
+      
+      // Track analytics
+      await this.analyticsService.trackWalletCreation({
+        userId: createWalletDto.userId,
+        walletType: 'CUSTODIAL',
+        walletAddress: wallet.walletAddress,
+        source: 'api',
+      });
+
+      return wallet;
+    } else {
+      // Generate Phantom connection URL
+      const connectUrl = this.phantomService.generateConnectUrl({
+        userId: createWalletDto.userId,
+        redirectUrl: `${process.env.FRONTEND_URL}/wallet/connected`,
+        cluster: 'devnet',
+      });
+
+      return {
+        walletType: 'PHANTOM',
+        connectUrl,
+        instructions: 'Redirect user to connectUrl to complete Phantom connection',
+      };
+    }
+  }
+
+  @Post('connect-phantom')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Complete Phantom wallet connection' })
+  async connectPhantom(@Body() connectDto: ConnectPhantomDto) {
+    // Validate the Phantom wallet
+    const validation = this.phantomService.validatePhantomWallet(connectDto.phantomWallet);
+    
+    if (!validation.isValid) {
+      throw new Error(validation.error);
+    }
+
+    // Verify ownership if signed message provided
+    if (connectDto.signedMessage) {
+      const message = this.phantomService.generateSignInMessage({
+        walletAddress: connectDto.phantomWallet,
+        timestamp: Date.now(),
+        nonce: 'random-nonce', // Should be from session
+      });
+
+      const verified = await this.phantomService.verifyWalletOwnership(
+        connectDto.phantomWallet,
+        connectDto.signedMessage,
+        message
+      );
+
+      if (!verified) {
+        throw new Error('Wallet ownership verification failed');
+      }
+    }
+
+    // Track analytics
+    await this.analyticsService.trackWalletCreation({
+      userId: connectDto.userId,
+      walletType: 'PHANTOM',
+      walletAddress: connectDto.phantomWallet,
+      source: 'phantom-connect',
+    });
+
+    return {
+      success: true,
+      walletAddress: connectDto.phantomWallet,
+      walletType: 'PHANTOM',
+    };
+  }
+
+  @Post('migrate')
+  @ApiOperation({ summary: 'Migrate from custodial to Phantom wallet' })
+  async migrateWallet(@Body() migrateDto: MigrateWalletDto) {
+    // Get user's custodial wallet (would come from database)
+    const custodialWallet = await this.custodialService.recoverWallet(
+      migrateDto.email,
+      migrateDto.userId,
+      'mock-verification-code' // In production, send verification email
+    );
+
+    if (!custodialWallet.success || !custodialWallet.walletAddress) {
+      throw new Error('Custodial wallet not found');
+    }
+
+    // Start migration
+    const migration = await this.migrationService.initiateMigration({
+      userId: migrateDto.userId,
+      email: migrateDto.email,
+      custodialWallet: custodialWallet.walletAddress,
+      phantomWallet: migrateDto.phantomWallet,
+    });
+
+    return migration;
+  }
+
+  @Get('migration/:migrationId')
+  @ApiOperation({ summary: 'Get migration status' })
+  async getMigrationStatus(@Param('migrationId') migrationId: string) {
+    return this.migrationService.getMigrationStatus(migrationId);
+  }
+
+  @Get('balance')
+  @ApiOperation({ summary: 'Get wallet balance' })
+  async getBalance(@Query() query: WalletBalanceDto) {
+    return this.custodialService.getWalletBalance(query.walletAddress);
+  }
+
+  @Get('analytics')
+  @ApiOperation({ summary: 'Get wallet analytics' })
+  async getAnalytics(@Query('timeframe') timeframe: 'day' | 'week' | 'month' | 'all' = 'week') {
+    return this.analyticsService.getWalletMetrics(timeframe);
+  }
+
+  @Get('analytics/funnel')
+  @ApiOperation({ summary: 'Get conversion funnel analytics' })
+  async getConversionFunnel() {
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+
+    return this.analyticsService.getConversionFunnel({ start: startDate, end: endDate });
+  }
+
+  @Get(':userId/journey')
+  @ApiOperation({ summary: 'Get user wallet journey' })
+  async getUserJourney(@Param('userId') userId: string) {
+    return this.analyticsService.getUserWalletJourney(userId);
+  }
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/user-service/src/dto/wallet.dto.ts ===
+=== START OF FILE ===
+import { IsString, IsEmail, IsOptional, IsEnum, IsBoolean } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export enum WalletType {
+  CUSTODIAL = 'CUSTODIAL',
+  PHANTOM = 'PHANTOM',
+}
+
+export class CreateWalletDto {
+  @ApiProperty({ description: 'User email address' })
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({ description: 'User ID' })
+  @IsString()
+  userId: string;
+
+  @ApiProperty({ enum: WalletType, description: 'Type of wallet to create' })
+  @IsEnum(WalletType)
+  walletType: WalletType;
+}
+
+export class ConnectPhantomDto {
+  @ApiProperty({ description: 'User ID' })
+  @IsString()
+  userId: string;
+
+  @ApiProperty({ description: 'Phantom wallet address' })
+  @IsString()
+  phantomWallet: string;
+
+  @ApiPropertyOptional({ description: 'Signed message for verification' })
+  @IsString()
+  @IsOptional()
+  signedMessage?: string;
+}
+
+export class MigrateWalletDto {
+  @ApiProperty({ description: 'User ID' })
+  @IsString()
+  userId: string;
+
+  @ApiProperty({ description: 'Email for verification' })
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({ description: 'Target Phantom wallet address' })
+  @IsString()
+  phantomWallet: string;
+
+  @ApiPropertyOptional({ description: 'Skip confirmation' })
+  @IsBoolean()
+  @IsOptional()
+  skipConfirmation?: boolean;
+}
+
+export class WalletBalanceDto {
+  @ApiProperty({ description: 'Wallet address' })
+  @IsString()
+  walletAddress: string;
+}
+
+export class TransferTicketDto {
+  @ApiProperty({ description: 'From wallet address' })
+  @IsString()
+  fromWallet: string;
+
+  @ApiProperty({ description: 'To wallet address' })
+  @IsString()
+  toWallet: string;
+
+  @ApiProperty({ description: 'Ticket PDA' })
+  @IsString()
+  ticketPDA: string;
+
+  @ApiPropertyOptional({ description: 'Transfer memo' })
+  @IsString()
+  @IsOptional()
+  memo?: string;
+}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/user-service/src/app.module.ts ===
+=== START OF FILE ===
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    UserModule,
+  ],
+})
+export class AppModule {}
+=== END OF FILE ===
+
+
+=== FILE: backend/services/user-service/src/user.module.ts ===
+=== START OF FILE ===
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
+import { CustodialWalletService } from './services/walletManager/custodialWallet';
+import { PhantomIntegrationService } from './services/walletManager/phantomIntegration';
+import { WalletMigrationService } from './services/walletManager/walletMigration';
+import { KeyEncryptionService } from './services/walletManager/keyEncryption';
+import { WalletAnalyticsService } from './services/walletManager/walletAnalytics';
+import { WalletController } from './controllers/wallet.controller';
+
+@Module({
+  imports: [
+    BullModule.registerQueue(
+      { name: 'wallet-migration' },
+      { name: 'analytics' }
+    ),
+  ],
+  controllers: [WalletController],
+  providers: [
+    CustodialWalletService,
+    PhantomIntegrationService,
+    WalletMigrationService,
+    KeyEncryptionService,
+    WalletAnalyticsService,
+  ],
+  exports: [
+    CustodialWalletService,
+    PhantomIntegrationService,
+    WalletMigrationService,
+  ],
+})
+export class UserModule {}
+=== END OF FILE ===
+
+
+========================================
+SHARED FILES
+========================================
+
+=== COLLECTION COMPLETE ===

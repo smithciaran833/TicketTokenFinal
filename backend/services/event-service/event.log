@@ -1,0 +1,939 @@
+
+> event-service@1.0.0 start:dev
+> nest start --watch
+
+[2J[3J[H[[90m4:13:17 PM[0m] Starting compilation in watch mode...
+
+[[90m4:13:19 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +15ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mEventController {/events}:[39m[38;5;3m +49ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id/cancel, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id/capacity, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id/sync, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mVenueController {/venues}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mScheduleController {/schedule}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/recurring, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/venue/:venueId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/venue/:venueId/slots, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/check-conflicts, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1169  - [39m06/20/2025, 4:13:20 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1ms[39m
+Event Service running on http://localhost:3001
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[31m[Nest] 1169  - [39m06/20/2025, 4:13:26 PM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39mTypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at stringify [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4mexpress[24m/lib/response.js:1020:12[90m)[39m
+    at ServerResponse.json [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4mexpress[24m/lib/response.js:243:14[90m)[39m
+    at ExpressAdapter.reply [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/platform-express/adapters/express-adapter.js:61:62[90m)[39m
+    at RouterResponseController.apply [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-response-controller.js:15:36[90m)[39m
+    at [90m/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-execution-context.js:176:48
+    at async [90m/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-execution-context.js:47:13
+    at async [90m/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-proxy.js:9:17
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[31m[Nest] 1169  - [39m06/20/2025, 4:14:09 PM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39mTypeError: Do not know how to serialize a BigInt
+    at JSON.stringify (<anonymous>)
+    at stringify [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4mexpress[24m/lib/response.js:1020:12[90m)[39m
+    at ServerResponse.json [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4mexpress[24m/lib/response.js:243:14[90m)[39m
+    at ExpressAdapter.reply [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/platform-express/adapters/express-adapter.js:61:62[90m)[39m
+    at RouterResponseController.apply [90m(/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-response-controller.js:15:36[90m)[39m
+    at [90m/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-execution-context.js:176:48
+    at async [90m/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-execution-context.js:47:13
+    at async [90m/home/kevin/TicketTokenFinal/backend/services/event-service/[39mnode_modules/[4m@nestjs[24m/core/router/router-proxy.js:9:17
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[2J[3J[H[[90m4:14:59 PM[0m] File change detected. Starting incremental compilation...
+
+[[90m4:15:00 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +15ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mEventController {/events}:[39m[38;5;3m +49ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id/cancel, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id/capacity, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/events/:id/sync, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mVenueController {/venues}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues/:id, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/venues/:id, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mScheduleController {/schedule}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/recurring, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/venue/:venueId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/venue/:venueId/slots, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/schedule/check-conflicts, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 1219  - [39m06/20/2025, 4:15:01 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +2ms[39m
+Event Service running on http://localhost:3001
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750450505777',
+  startTime: 2025-06-27T20:15:05.777Z,
+  endTime: 2025-06-27T23:15:05.777Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750450505794-qk51vdnsk
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750450625978',
+  startTime: 2025-06-27T20:17:05.977Z,
+  endTime: 2025-06-27T23:17:05.977Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750450625983-zl8tk32b9
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+prisma:query SELECT 1
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE 1=1 ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+[ioredis] Unhandled error event: Error: connect ECONNREFUSED 127.0.0.1:6379
+    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1607:16)
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750450988121',
+  startTime: 2025-06-27T20:23:08.119Z,
+  endTime: 2025-06-27T23:23:08.119Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750450988127-n98s79q3o
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750451286567',
+  startTime: 2025-06-27T20:28:06.567Z,
+  endTime: 2025-06-27T23:28:06.567Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750451286571-iuhpjlxwn
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750451907090',
+  startTime: 2025-06-27T20:38:27.090Z,
+  endTime: 2025-06-27T23:38:27.090Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750451907096-gt1i2mluw
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750452042133',
+  startTime: 2025-06-27T20:40:42.130Z,
+  endTime: 2025-06-27T23:40:42.130Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750452042137-bf4uhqk2d
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750452112951',
+  startTime: 2025-06-27T20:41:52.951Z,
+  endTime: 2025-06-27T23:41:52.951Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750452112957-5ciisyld2
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+Creating event with data: {
+  name: 'Electronic Music Night - Test Event',
+  description: 'A test event for the ticketing platform',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'organizer-1750452204283',
+  startTime: 2025-06-27T20:43:24.283Z,
+  endTime: 2025-06-27T23:43:24.283Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100,
+  tiers: []
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750452204287-se7mjmjqb
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE (`main`.`events`.`status` = ? AND `main`.`events`.`start_time` >= ?) ORDER BY `main`.`events`.`start_time` ASC LIMIT ? OFFSET ?
+Creating event with data: {
+  name: 'Test Event',
+  description: 'Test',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'org-1750452334250',
+  startTime: 2025-06-27T20:45:34.249Z,
+  endTime: 2025-06-27T23:45:34.249Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750452334254-kne1j5qzs
+Creating event with data: {
+  name: 'Test Event',
+  description: 'Test',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'org-1750453761269',
+  startTime: 2025-06-27T21:09:21.269Z,
+  endTime: 2025-06-28T00:09:21.269Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750453761277-uoyj1uisc
+Creating event with data: {
+  name: 'Test Event',
+  description: 'Test',
+  venueId: '69fb9c5c-2bcd-4f9d-a88a-ff34030e861b',
+  organizerWallet: 'org-1750454446510',
+  startTime: 2025-06-27T21:20:46.510Z,
+  endTime: 2025-06-28T00:20:46.510Z,
+  totalTickets: 500,
+  generalPrice: 50,
+  vipPrice: 100
+}
+prisma:query SELECT 1
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE (`main`.`venues`.`id` = ? AND 1=1) LIMIT ? OFFSET ?
+Found venue: Test Venue - Club Space Miami
+Creating event in database...
+prisma:query BEGIN IMMEDIATE
+prisma:query INSERT INTO `main`.`events` (`id`, `event_id`, `organizer_wallet`, `name`, `description`, `venue_id`, `start_time`, `end_time`, `total_tickets`, `tickets_sold`, `tickets_used`, `tickets_burned`, `general_price`, `vip_price`, `cancelled`, `transferable`, `status`, `created_at`, `updated_at`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING `id` AS `id`
+prisma:query SELECT `main`.`events`.`id`, `main`.`events`.`event_id`, `main`.`events`.`blockchain_address`, `main`.`events`.`organizer_wallet`, `main`.`events`.`name`, `main`.`events`.`description`, `main`.`events`.`venue_id`, `main`.`events`.`start_time`, `main`.`events`.`end_time`, `main`.`events`.`total_tickets`, `main`.`events`.`tickets_sold`, `main`.`events`.`tickets_used`, `main`.`events`.`tickets_burned`, `main`.`events`.`general_price`, `main`.`events`.`vip_price`, `main`.`events`.`cancelled`, `main`.`events`.`transferable`, `main`.`events`.`transfer_freeze_time`, `main`.`events`.`metadata`, `main`.`events`.`status`, `main`.`events`.`created_at`, `main`.`events`.`updated_at` FROM `main`.`events` WHERE `main`.`events`.`id` = ? LIMIT ? OFFSET ?
+prisma:query SELECT `main`.`venues`.`id`, `main`.`venues`.`name`, `main`.`venues`.`address`, `main`.`venues`.`city`, `main`.`venues`.`state`, `main`.`venues`.`country`, `main`.`venues`.`postal_code`, `main`.`venues`.`latitude`, `main`.`venues`.`longitude`, `main`.`venues`.`capacity`, `main`.`venues`.`venue_type`, `main`.`venues`.`amenities`, `main`.`venues`.`owner_wallet`, `main`.`venues`.`verified`, `main`.`venues`.`metadata`, `main`.`venues`.`created_at`, `main`.`venues`.`updated_at` FROM `main`.`venues` WHERE `main`.`venues`.`id` IN (?) LIMIT ? OFFSET ?
+prisma:query COMMIT
+Event created successfully: event-1750454446518-s9e2nds0k
